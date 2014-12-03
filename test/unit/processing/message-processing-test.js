@@ -106,63 +106,85 @@ describe('unit/processing/message-processing-test.js', function() {
   });
 
   describe('handleProcessedMessage', function() {
+    var queue_name = 'queue_name ' + randomString(),
+        sqs_message = getMockedMessage();
 
-    it('should delete the processed message', function(done) {
-      var queue_name = 'queue_name ' + randomString(),
-          sqs_message = getMockedMessage();
+    describe('with valid input and processed message', function() {
 
-      message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
+      it('should delete the processed message', function(done) {
 
-      message_processing.handleProcessedMessage(
-        null,
-        queue_name,
-        sqs_message,
-        function(err) {
-          logger_mock.trace.should.have.callCount(2);
-          logger_mock.warn.should.have.callCount(0);
-          message_queue_mock.deleteMessage.should.have.callCount(1);
-          done(err);
-        });
+        message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
+
+        message_processing.handleProcessedMessage(
+            null,
+            queue_name,
+            sqs_message,
+            function(err) {
+              logger_mock.trace.should.have.callCount(2);
+              logger_mock.warn.should.have.callCount(0);
+              message_queue_mock.deleteMessage.should.have.callCount(1);
+              done(err);
+            });
+      });
+
     });
 
-    it('should callback immediately without passing err ' +
-      'if message was not processed', function(done) {
+    describe('with error from processMessage()', function() {
 
-      var queue_name = 'queue_name ' + randomString(),
-          sqs_message = getMockedMessage();
+      it('should callback immediately without passing err', function(done) {
+        message_processing.handleProcessedMessage(
+            new Error('Error from processMessage'),
+            queue_name,
+            sqs_message,
+            function(err) {
+              logger_mock.trace.should.have.callCount(0);
+              logger_mock.warn.should.have.callCount(1);
+              message_queue_mock.deleteMessage.should.have.callCount(0);
+              done(err);
+            });
+      });
 
-      message_processing.handleProcessedMessage(
-        new Error('Error from processMessage'),
-        queue_name,
-        sqs_message,
-        function(err) {
-          logger_mock.trace.should.have.callCount(0);
-          logger_mock.warn.should.have.callCount(1);
-          message_queue_mock.deleteMessage.should.have.callCount(0);
-          done(err);
-        });
     });
 
-    it('should callback with err if unable to delete the message', function(done) {
-      var queue_name = 'queue_name ' + randomString(),
-          sqs_message = getMockedMessage();
+    describe('with failing deleteMessage()', function() {
 
-      message_queue_mock.deleteMessage.
-          callsArgWithAsync(2, new Error('Mock err from deleteMessage'));
+      it('should callback with err', function(done) {
+        message_queue_mock.deleteMessage.
+            callsArgWithAsync(2, new Error('Mock err from deleteMessage'));
 
-      message_processing.handleProcessedMessage(
-        null,
-        queue_name,
-        sqs_message,
-        function(err) {
-          logger_mock.trace.should.have.callCount(2);
-          logger_mock.warn.should.have.callCount(1);
-          logger_mock.warn.should.have.been.calledWithExactly(
-              sinon.match.object,
-              'Error deleting message');
-          message_queue_mock.deleteMessage.should.have.callCount(1);
-          done(err);
-        });
+        message_processing.handleProcessedMessage(
+            null,
+            queue_name,
+            sqs_message,
+            function(err) {
+              logger_mock.trace.should.have.callCount(2);
+              logger_mock.warn.should.have.callCount(1);
+              logger_mock.warn.should.have.been.calledWithExactly(
+                  sinon.match.object,
+                  'Error deleting message');
+              message_queue_mock.deleteMessage.should.have.callCount(1);
+              done(err);
+            });
+      });
+
+    });
+
+    describe('with invalid ReceiptHandle', function() {
+
+      it('should invoke callback and not delete message', function(done) {
+        message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
+        var invalid_sqs_message_param = {};
+        message_processing.handleProcessedMessage(
+            null,
+            queue_name,
+            invalid_sqs_message_param,
+            function(err) {
+              logger_mock.warn.should.have.callCount(1);
+              message_queue_mock.deleteMessage.should.have.callCount(0);
+              done(err);
+            });
+      });
+
     });
 
   });
