@@ -32,9 +32,9 @@
       }
     },
     "error-factory": {
-      "version": "0.3.0",
-      "from": "https://github.com/Springworks/node-error-factory/archive/v0.3.0.tar.gz",
-      "resolved": "https://github.com/Springworks/node-error-factory/archive/v0.3.0.tar.gz",
+      "version": "1.2.0",
+      "from": "https://github.com/Springworks/node-error-factory/archive/v1.2.0.tar.gz",
+      "resolved": "https://github.com/Springworks/node-error-factory/archive/v1.2.0.tar.gz",
       "dependencies": {
         "boom": {
           "version": "2.6.1",
@@ -42,9 +42,9 @@
           "resolved": "https://registry.npmjs.org/boom/-/boom-2.6.1.tgz",
           "dependencies": {
             "hoek": {
-              "version": "2.10.0",
+              "version": "2.11.0",
               "from": "hoek@>=2.0.0 <3.0.0",
-              "resolved": "https://registry.npmjs.org/hoek/-/hoek-2.10.0.tgz"
+              "resolved": "https://registry.npmjs.org/hoek/-/hoek-2.11.0.tgz"
             }
           }
         }
