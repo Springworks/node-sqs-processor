@@ -120,7 +120,7 @@ describe('unit/processing/message-processing-test.js', function() {
             queue_name,
             sqs_message,
             function(err) {
-              logger_mock.trace.should.have.callCount(2);
+              logger_mock.trace.should.have.callCount(0);
               logger_mock.warn.should.have.callCount(0);
               message_queue_mock.deleteMessage.should.have.callCount(1);
               done(err);
@@ -157,7 +157,7 @@ describe('unit/processing/message-processing-test.js', function() {
             queue_name,
             sqs_message,
             function(err) {
-              logger_mock.trace.should.have.callCount(2);
+              logger_mock.trace.should.have.callCount(0);
               logger_mock.warn.should.have.callCount(1);
               logger_mock.warn.should.have.been.calledWithExactly(
                   sinon.match.object,

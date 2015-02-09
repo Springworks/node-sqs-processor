@@ -1,0 +1,7 @@
+{
+  "generator-springworks": {
+    "projectName": "sqs processor",
+    "projectDescription": "Module for SQS queue processing ",
+    "privateProject": false
+  }
+}

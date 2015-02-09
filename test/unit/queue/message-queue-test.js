@@ -61,10 +61,7 @@ describe('unit/queue/message-queue-test.js', function() {
         should.not.exist(err);
         messages.should.eql(mocked_messages);
 
-        logger_mock.debug.should.have.callCount(1);
-        logger_mock.debug.should.have.been.calledWithExactly(
-            'receiveQueueMessages, %s:',
-            queue_name);
+        logger_mock.debug.should.have.callCount(0);
         sqs_handler_mock.getQueueUrlParams.should.have.callCount(1);
         sqs_handler_mock.getQueueUrlParams.should.have.been.calledWithExactly(
             queue_name);

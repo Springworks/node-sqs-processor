@@ -38,10 +38,7 @@ describe('unit/message-capture-test.js', function() {
       message_capture.receiveMessageBatch(queue_name, function(err) {
         should.not.exist(err);
 
-        logger_mock.debug.should.have.callCount(1);
-        logger_mock.debug.should.have.been.calledWithExactly(
-            'receiveMessageBatch for %s',
-            queue_name);
+        logger_mock.debug.should.have.callCount(0);
         logger_mock.info.should.have.callCount(2);
         logger_mock.warn.should.have.callCount(0);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
@@ -67,11 +64,8 @@ describe('unit/message-capture-test.js', function() {
       message_capture.receiveMessageBatch(queue_name, function(err) {
         should.not.exist(err);
 
-        logger_mock.debug.should.have.callCount(1);
+        logger_mock.debug.should.have.callCount(0);
         logger_mock.info.should.have.callCount(1);
-        logger_mock.debug.should.have.been.calledWithExactly(
-            'receiveMessageBatch for %s',
-            queue_name);
         logger_mock.warn.should.have.callCount(0);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
         message_queue_mock.receiveQueueMessages.should.have.been.calledWith(
@@ -93,15 +87,12 @@ describe('unit/message-capture-test.js', function() {
         should.exist(err);
         err.should.have.property('message', 'Mocked SQS err');
 
-        logger_mock.debug.should.have.callCount(1);
-        logger_mock.debug.should.have.been.calledWithExactly(
-            'receiveMessageBatch for %s',
-            queue_name);
+        logger_mock.debug.should.have.callCount(0);
         logger_mock.info.should.have.callCount(0);
         logger_mock.warn.should.have.callCount(1);
         logger_mock.warn.should.have.been.calledWithExactly(
             sqs_err,
-            'Error receiving messages for queue %s:',
+            'Error receiving messages for queue %s',
             queue_name);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
         message_queue_mock.receiveQueueMessages.should.have.been.calledWith(
