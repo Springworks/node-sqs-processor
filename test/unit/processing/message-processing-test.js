@@ -1,15 +1,8 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
-
 var message_processing_module = require('../../../lib/processing/message-processing.js');
 
-chai.should();
-chai.use(require('sinon-chai'));
-
-
-describe('unit/processing/message-processing-test.js', function() {
+describe(__filename, function() {
   var message_queue_mock,
       logger_mock,
       providedMessageProcessor,
@@ -159,7 +152,7 @@ describe('unit/processing/message-processing-test.js', function() {
             function(err) {
               logger_mock.trace.should.have.callCount(0);
               logger_mock.warn.should.have.callCount(1);
-              logger_mock.warn.should.have.been.calledWithExactly(
+              logger_mock.warn.should.be.calledWithExactly(
                   sinon.match.object,
                   'Error deleting message');
               message_queue_mock.deleteMessage.should.have.callCount(1);

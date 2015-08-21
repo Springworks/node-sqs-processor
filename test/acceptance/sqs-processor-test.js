@@ -1,16 +1,9 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
+var sqs_processor_module = require('../..');
+var test_util = require('../../test-util/test-util.js');
 
-var sqs_processor_module = require('../..'),
-    test_util = require('../../test-util/test-util.js');
-
-chai.should();
-chai.use(require('sinon-chai'));
-
-
-describe('acceptance/sqs-processor-test.js', function() {
+describe(__filename, function() {
   var aws_sqs_mock,
       iterator,
       logger_mock,

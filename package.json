@@ -4,10 +4,8 @@
   "description": "Module for SQS queue processing",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --ui bdd --check-leaks --recursive --slow 150 --reporter spec test",
-    "test-cov": "NODE_ENV=test istanbul cover --report teamcity --report lcov _mocha -- --ui bdd --check-leaks --recursive --slow 150 --reporter spec test",
-    "test-debug": "NODE_ENV=test node-debug _mocha --bail --ui bdd --check-leaks --recursive --reporter dot test",
-    "test-changed": "NODE_ENV=test mocha --ui bdd --check-leaks --recursive --slow 150 --reporter dot $(git diff --name-only test | grep -E '(\\.js)$')",
+    "test": "NODE_ENV=test istanbul cover _mocha -- test",
+    "test-no-cov": "NODE_ENV=test mocha test",
     "lint": "eslint .",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
@@ -18,13 +16,11 @@
     "input-validator": "https://github.com/Springworks/node-input-validator/archive/v0.5.0.tar.gz"
   },
   "devDependencies": {
-    "chai": "^1.10.0",
+    "@springworks/test-harness": "^1.0.3",
     "coveralls": "^2.11.4",
     "eslint": "^0.9.2",
-    "istanbul": "^0.3.0",
-    "mocha": "^2.0.1",
-    "sinon": "^1.11.1",
-    "sinon-chai": "^2.6.0"
+    "istanbul": "^0.3.18",
+    "mocha": "^2.2.5"
   },
   "repository": {
     "type": "git",

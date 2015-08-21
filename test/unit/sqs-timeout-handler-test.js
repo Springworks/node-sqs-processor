@@ -1,16 +1,9 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
+var sqs_timeout_handler_module = require('../../lib/sqs-timeout-handler.js');
+var test_util = require('../../test-util/test-util.js');
 
-var sqs_timeout_handler_module = require('../../lib/sqs-timeout-handler.js'),
-    test_util = require('../../test-util/test-util.js');
-
-chai.should();
-chai.use(require('sinon-chai'));
-
-
-describe('unit/sqs-timeout-handler-test.js', function() {
+describe(__filename, function() {
 
   var config,
       logger,
@@ -29,7 +22,7 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
     var stop_function = sqs_timeout_handler.start(function(){});
-    stop_function.should.be.a('function');
+    stop_function.should.be.a.Function();
 
   });
 
@@ -43,7 +36,7 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler.start(cb);
 
     setTimeout(function() {
-      logger.warn.should.have.been.calledWithExactly('Forced to fetch a new batch manually');
+      logger.warn.should.be.calledWithExactly('Forced to fetch a new batch manually');
       done();
     }, 20);
 
@@ -58,8 +51,8 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler.start(cb);
 
     setTimeout(function() {
-      logger.warn.should.have.been.calledWithExactly('Forced to fetch a new batch manually');
-      cb.should.have.been.calledWithExactly(null);
+      logger.warn.should.be.calledWithExactly('Forced to fetch a new batch manually');
+      cb.should.be.calledWithExactly(null);
       done();
     }, 20);
   });
@@ -103,11 +96,11 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler.start(cb4);
 
     setTimeout(function() {
-      cb0.should.have.been.calledWithExactly(null);
-      cb1.should.have.been.calledWithExactly(null);
-      cb2.should.have.been.calledWithExactly(null);
-      cb3.should.have.been.calledWithExactly(sinon.match.instanceOf(Error));
-      cb4.should.have.been.calledWithExactly(sinon.match.instanceOf(Error));
+      cb0.should.be.calledWithExactly(null);
+      cb1.should.be.calledWithExactly(null);
+      cb2.should.be.calledWithExactly(null);
+      cb3.should.be.calledWithExactly(sinon.match.instanceOf(Error));
+      cb4.should.be.calledWithExactly(sinon.match.instanceOf(Error));
       done();
     }, 20);
   });
@@ -131,20 +124,20 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler.start(cb0);
 
     setTimeout(function() {
-      cb0.should.have.been.calledWithExactly(null);
+      cb0.should.be.calledWithExactly(null);
       sqs_timeout_handler.start(cb1);
 
       setTimeout(function() {
-        cb1.should.have.been.calledWithExactly(null);
+        cb1.should.be.calledWithExactly(null);
         sqs_timeout_handler.start(cb2);
 
         setTimeout(function() {
-          cb2.should.have.been.calledWithExactly(null);
+          cb2.should.be.calledWithExactly(null);
           sqs_timeout_handler.start(cb3);
 
           setTimeout(function() {
             // have error
-            cb3.should.have.been.calledWithExactly(sinon.match.instanceOf(Error));
+            cb3.should.be.calledWithExactly(sinon.match.instanceOf(Error));
             stop_function = sqs_timeout_handler.start(cb4);
 
             // clear the timeout
@@ -158,7 +151,7 @@ describe('unit/sqs-timeout-handler-test.js', function() {
 
             setTimeout(function() {
               // no error again
-              cb5.should.have.been.calledWithExactly(null);
+              cb5.should.be.calledWithExactly(null);
               done();
             }, 10); // note short timeout
           }, 10);

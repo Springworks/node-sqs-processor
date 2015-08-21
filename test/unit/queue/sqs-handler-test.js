@@ -1,17 +1,9 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
+var sqs_handler_module = require('../../../lib/queue/sqs-handler.js');
+var test_util = require('../../../test-util/test-util.js');
 
-var sqs_handler_module = require('../../../lib/queue/sqs-handler.js'),
-    test_util = require('../../../test-util/test-util.js');
-
-var should = chai.should();
-
-chai.use(require('sinon-chai'));
-
-
-describe('unit/queue/sqs-handler-test.js', function() {
+describe(__filename, function() {
   var sqs_handler,
       aws_sqs,
       logger,
@@ -94,7 +86,7 @@ describe('unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler.receiveMessageBatch(url, function(err, data) {
         should.not.exist(err);
-        data.should.deep.equal({ Message: 'abc123' });
+        data.should.eql({ Message: 'abc123' });
         done();
       });
 
@@ -126,7 +118,7 @@ describe('unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler.receiveMessageBatch(url, function(err, data) {
         should.not.exist(data);
-        err.should.deep.instanceOf(Error);
+        err.should.be.instanceOf(Error);
         done();
       });
 
@@ -161,7 +153,7 @@ describe('unit/queue/sqs-handler-test.js', function() {
 
       result = sqs_handler.getReceiveMessageParams(url);
 
-      result.should.have.deep.equal(expected_params);
+      result.should.eql(expected_params);
     });
   });
 
@@ -204,7 +196,7 @@ describe('unit/queue/sqs-handler-test.js', function() {
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
 
       sqs_handler.deleteMessage(queue_url, receipt_handle, function(err, data) {
-        err.should.deep.instanceOf(Error);
+        err.should.be.instanceOf(Error);
         should.not.exist(data); // data is also supposed to be null
         done();
       });

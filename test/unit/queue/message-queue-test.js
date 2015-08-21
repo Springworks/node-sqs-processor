@@ -1,16 +1,8 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
-
 var message_queue_module = require('../../../lib/queue/message-queue.js');
 
-var should = chai.should();
-
-chai.use(require('sinon-chai'));
-
-
-describe('unit/queue/message-queue-test.js', function() {
+describe(__filename, function() {
   var sqs_handler_mock,
       logger_mock,
       message_queue;
@@ -63,14 +55,14 @@ describe('unit/queue/message-queue-test.js', function() {
 
         logger_mock.debug.should.have.callCount(0);
         sqs_handler_mock.getQueueUrlParams.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrlParams.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(
             queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
             queue_url_params,
             sinon.match.func);
         sqs_handler_mock.receiveMessageBatch.should.have.callCount(1);
-        sqs_handler_mock.receiveMessageBatch.should.have.been.calledWithExactly(
+        sqs_handler_mock.receiveMessageBatch.should.be.calledWithExactly(
             queue_url,
             sinon.match.func);
 
@@ -98,12 +90,12 @@ describe('unit/queue/message-queue-test.js', function() {
         err.should.have.property('message', 'mock err from getQueueUrl');
 
         logger_mock.warn.should.have.callCount(1);
-        logger_mock.warn.should.have.been.calledWithExactly(
+        logger_mock.warn.should.be.calledWithExactly(
             err,
             'Error loading url for queue %s:',
             queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
             queue_url_params,
             sinon.match.func);
         sqs_handler_mock.receiveMessageBatch.should.have.callCount(0);
@@ -138,12 +130,12 @@ describe('unit/queue/message-queue-test.js', function() {
         err.should.have.property('message', 'mock err from receiveMessageBatch');
 
         logger_mock.warn.should.have.callCount(1);
-        logger_mock.warn.should.have.been.calledWithExactly(
+        logger_mock.warn.should.be.calledWithExactly(
             err,
             'Error receiving messages from %s:',
             queue_url);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
             queue_url_params,
             sinon.match.func);
         sqs_handler_mock.receiveMessageBatch.should.have.callCount(1);
@@ -222,14 +214,14 @@ describe('unit/queue/message-queue-test.js', function() {
         should.not.exist(err);
 
         sqs_handler_mock.getQueueUrlParams.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrlParams.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(
             queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
             queue_url_params,
             sinon.match.func);
         sqs_handler_mock.deleteMessage.should.have.callCount(1);
-        sqs_handler_mock.deleteMessage.should.have.been.calledWithExactly(
+        sqs_handler_mock.deleteMessage.should.be.calledWithExactly(
             queue_url,
             receipt_handle,
             sinon.match.func);
@@ -286,14 +278,14 @@ describe('unit/queue/message-queue-test.js', function() {
         err.should.have.property('message', 'mock err from deleteMessage');
 
         sqs_handler_mock.getQueueUrlParams.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrlParams.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(
             queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.have.been.calledWithExactly(
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
             queue_url_params,
             sinon.match.func);
         sqs_handler_mock.deleteMessage.should.have.callCount(1);
-        sqs_handler_mock.deleteMessage.should.have.been.calledWithExactly(
+        sqs_handler_mock.deleteMessage.should.be.calledWithExactly(
             queue_url,
             receipt_handle,
             sinon.match.func);
