@@ -4,10 +4,9 @@ var sqs_timeout_handler_module = require('../../lib/sqs-timeout-handler.js');
 var test_util = require('../../test-util/test-util.js');
 
 describe(__filename, function() {
-
-  var config,
-      logger,
-      sqs_timeout_handler;
+  var config;
+  var logger;
+  var sqs_timeout_handler;
 
   beforeEach(function() {
     config = test_util.getTestConfig();
@@ -21,9 +20,9 @@ describe(__filename, function() {
     config.batch_force_threshold = 5;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var stop_function = sqs_timeout_handler.start(function(){});
+    var stop_function = sqs_timeout_handler.start(function() {
+    });
     stop_function.should.be.a.Function();
-
   });
 
   it('should warn when timeout is called', function(done) {
@@ -39,7 +38,6 @@ describe(__filename, function() {
       logger.warn.should.be.calledWithExactly('Forced to fetch a new batch manually');
       done();
     }, 20);
-
   });
 
   it('should invoke callback when time runs out', function(done) {
@@ -58,15 +56,13 @@ describe(__filename, function() {
   });
 
 
-  it('should not invoke callback when time runs out if it was cancelled first',
-    function(done) {
-
+  it('should not invoke callback when time runs out if it was cancelled first', function(done) {
     config.batch_timeout = 10;
     config.batch_force_threshold = 5;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var cb = sinon.stub(),
-        stop_function = sqs_timeout_handler.start(cb);
+    var cb = sinon.stub();
+    var stop_function = sqs_timeout_handler.start(cb);
 
     stop_function();
 
@@ -76,18 +72,16 @@ describe(__filename, function() {
     }, 20);
   });
 
-  it('should invoke callback with error when more than force_threshould consecutive timeouts',
-    function(done) {
-
+  it('should invoke callback with error when more than force_threshould consecutive timeouts', function(done) {
     config.batch_timeout = 1;
     config.batch_force_threshold = 3;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var cb0 = sinon.stub(),
-        cb1 = sinon.stub(),
-        cb2 = sinon.stub(),
-        cb3 = sinon.stub(),
-        cb4 = sinon.stub();
+    var cb0 = sinon.stub();
+    var cb1 = sinon.stub();
+    var cb2 = sinon.stub();
+    var cb3 = sinon.stub();
+    var cb4 = sinon.stub();
 
     sqs_timeout_handler.start(cb0);
     sqs_timeout_handler.start(cb1);
@@ -105,21 +99,18 @@ describe(__filename, function() {
     }, 20);
   });
 
- it('should invoke callback with error when more ' +
-    'than force_threshould consecutive timeouts ' +
-    'and then return to normal if it starts working', function(done) {
-
+  it('should invoke callback with error when more than force_threshould consecutive timeouts and then return to normal if it starts working', function(done) {
     config.batch_timeout = 1;
     config.batch_force_threshold = 3;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var cb0 = sinon.stub(),
-        cb1 = sinon.stub(),
-        cb2 = sinon.stub(),
-        cb3 = sinon.stub(),
-        cb4 = sinon.stub(),
-        cb5 = sinon.stub(),
-        stop_function;
+    var cb0 = sinon.stub();
+    var cb1 = sinon.stub();
+    var cb2 = sinon.stub();
+    var cb3 = sinon.stub();
+    var cb4 = sinon.stub();
+    var cb5 = sinon.stub();
+    var stop_function;
 
     sqs_timeout_handler.start(cb0);
 

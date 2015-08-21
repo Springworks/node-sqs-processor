@@ -3,9 +3,9 @@
 var message_queue_module = require('../../../lib/queue/message-queue.js');
 
 describe(__filename, function() {
-  var sqs_handler_mock,
-      logger_mock,
-      message_queue;
+  var sqs_handler_mock;
+  var logger_mock;
+  var message_queue;
 
   beforeEach(function() {
     sqs_handler_mock = {
@@ -15,9 +15,7 @@ describe(__filename, function() {
     logger_mock = {
       warn: sinon.stub()
     };
-    message_queue = message_queue_module.create(
-        sqs_handler_mock,
-        logger_mock);
+    message_queue = message_queue_module.create(sqs_handler_mock, logger_mock);
   });
 
   describe('receiveQueueMessages', function() {
@@ -28,26 +26,20 @@ describe(__filename, function() {
     });
 
     it('should receive queue messages', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          queue_url_params = { QueueName: queue_name },
-          queue_url = 'mocked-queue-url-for-' + queue_name,
-          mocked_messages = ['mocked message'],
-          sqs_data = { Messages: mocked_messages };
+      var queue_name = 'test_queue_name_' + Date.now();
+      var queue_url_params = { QueueName: queue_name };
+      var queue_url = 'mocked-queue-url-for-' + queue_name;
+      var mocked_messages = ['mocked message'];
+      var sqs_data = { Messages: mocked_messages };
 
-      sqs_handler_mock.getQueueUrlParams.
-          throws('getQueueUrlParams not mocked for specified args').
-          withArgs(queue_name).
-          returns(queue_url_params);
+      sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
+          .withArgs(queue_name).returns(queue_url_params);
 
-      sqs_handler_mock.getQueueUrl.
-          throws('getQueueUrl not mocked for specified args').
-          withArgs(queue_url_params, sinon.match.func).
-          callsArgWithAsync(1, null, queue_url);
+      sqs_handler_mock.getQueueUrl.throws('getQueueUrl not mocked for specified args')
+          .withArgs(queue_url_params, sinon.match.func).callsArgWithAsync(1, null, queue_url);
 
-      sqs_handler_mock.receiveMessageBatch.
-          throws('receiveMessageBatch not mocked for specified args').
-          withArgs(queue_url, sinon.match.func).
-          callsArgWithAsync(1, null, sqs_data);
+      sqs_handler_mock.receiveMessageBatch.throws('receiveMessageBatch not mocked for specified args')
+          .withArgs(queue_url, sinon.match.func).callsArgWithAsync(1, null, sqs_data);
 
       message_queue.receiveQueueMessages(queue_name, function(err, messages) {
         should.not.exist(err);
@@ -55,34 +47,25 @@ describe(__filename, function() {
 
         logger_mock.debug.should.have.callCount(0);
         sqs_handler_mock.getQueueUrlParams.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(
-            queue_name);
+        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
-            queue_url_params,
-            sinon.match.func);
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(queue_url_params, sinon.match.func);
         sqs_handler_mock.receiveMessageBatch.should.have.callCount(1);
-        sqs_handler_mock.receiveMessageBatch.should.be.calledWithExactly(
-            queue_url,
-            sinon.match.func);
+        sqs_handler_mock.receiveMessageBatch.should.be.calledWithExactly(queue_url, sinon.match.func);
 
         done();
       });
     });
 
     it('should callback with err if unable to get queue url', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          queue_url_params = { QueueName: queue_name };
+      var queue_name = 'test_queue_name_' + Date.now();
+      var queue_url_params = { QueueName: queue_name };
 
-      sqs_handler_mock.getQueueUrlParams.
-          throws('getQueueUrlParams not mocked for specified args').
-          withArgs(queue_name).
-          returns(queue_url_params);
+      sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
+          .withArgs(queue_name).returns(queue_url_params);
 
-      sqs_handler_mock.getQueueUrl.
-          throws('getQueueUrl not mocked for specified args').
-          withArgs(queue_url_params, sinon.match.func).
-          callsArgWithAsync(1, new Error('mock err from getQueueUrl'), null);
+      sqs_handler_mock.getQueueUrl.throws('getQueueUrl not mocked for specified args')
+          .withArgs(queue_url_params, sinon.match.func).callsArgWithAsync(1, new Error('mock err from getQueueUrl'), null);
 
       message_queue.receiveQueueMessages(queue_name, function(err, messages) {
         should.exist(err);
@@ -90,14 +73,9 @@ describe(__filename, function() {
         err.should.have.property('message', 'mock err from getQueueUrl');
 
         logger_mock.warn.should.have.callCount(1);
-        logger_mock.warn.should.be.calledWithExactly(
-            err,
-            'Error loading url for queue %s:',
-            queue_name);
+        logger_mock.warn.should.be.calledWithExactly(err, 'Error loading url for queue %s:', queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
-            queue_url_params,
-            sinon.match.func);
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(queue_url_params, sinon.match.func);
         sqs_handler_mock.receiveMessageBatch.should.have.callCount(0);
 
         done();
@@ -105,24 +83,18 @@ describe(__filename, function() {
     });
 
     it('should callback with err if unable receive message batch', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          queue_url_params = { QueueName: queue_name },
-          queue_url = 'mocked-queue-url-for-' + queue_name;
+      var queue_name = 'test_queue_name_' + Date.now();
+      var queue_url_params = { QueueName: queue_name };
+      var queue_url = 'mocked-queue-url-for-' + queue_name;
 
-      sqs_handler_mock.getQueueUrlParams.
-          throws('getQueueUrlParams not mocked for specified args').
-          withArgs(queue_name).
-          returns(queue_url_params);
+      sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
+          .withArgs(queue_name).returns(queue_url_params);
 
-      sqs_handler_mock.getQueueUrl.
-          throws('getQueueUrl not mocked for specified args').
-          withArgs(queue_url_params, sinon.match.func).
-          callsArgWithAsync(1, null, queue_url);
+      sqs_handler_mock.getQueueUrl.throws('getQueueUrl not mocked for specified args')
+          .withArgs(queue_url_params, sinon.match.func).callsArgWithAsync(1, null, queue_url);
 
-      sqs_handler_mock.receiveMessageBatch.
-          throws('receiveMessageBatch not mocked for specified args').
-          withArgs(queue_url, sinon.match.func).
-          callsArgWithAsync(1, new Error('mock err from receiveMessageBatch'), null);
+      sqs_handler_mock.receiveMessageBatch.throws('receiveMessageBatch not mocked for specified args')
+          .withArgs(queue_url, sinon.match.func).callsArgWithAsync(1, new Error('mock err from receiveMessageBatch'), null);
 
       message_queue.receiveQueueMessages(queue_name, function(err, messages) {
         should.exist(err);
@@ -130,14 +102,9 @@ describe(__filename, function() {
         err.should.have.property('message', 'mock err from receiveMessageBatch');
 
         logger_mock.warn.should.have.callCount(1);
-        logger_mock.warn.should.be.calledWithExactly(
-            err,
-            'Error receiving messages from %s:',
-            queue_url);
+        logger_mock.warn.should.be.calledWithExactly(err, 'Error receiving messages from %s:', queue_url);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
-            queue_url_params,
-            sinon.match.func);
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(queue_url_params, sinon.match.func);
         sqs_handler_mock.receiveMessageBatch.should.have.callCount(1);
 
         done();
@@ -145,10 +112,10 @@ describe(__filename, function() {
     });
 
     it('should callback with err if response object is undefined', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          queue_url_params = { QueueName: queue_name },
-          queue_url = 'mocked-queue-url-for-' + queue_name,
-          sqs_data = null;
+      var queue_name = 'test_queue_name_' + Date.now();
+      var queue_url_params = { QueueName: queue_name };
+      var queue_url = 'mocked-queue-url-for-' + queue_name;
+      var sqs_data = null;
 
       sqs_handler_mock.getQueueUrlParams.returns(queue_url_params);
       sqs_handler_mock.getQueueUrl.callsArgWithAsync(1, null, queue_url);
@@ -163,10 +130,10 @@ describe(__filename, function() {
     });
 
     it('should callback with an empty array if response does not contain messages', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          queue_url_params = { QueueName: queue_name },
-          queue_url = 'mocked-queue-url-for-' + queue_name,
-          sqs_data = { Messages: null };
+      var queue_name = 'test_queue_name_' + Date.now();
+      var queue_url_params = { QueueName: queue_name };
+      var queue_url = 'mocked-queue-url-for-' + queue_name;
+      var sqs_data = { Messages: null };
 
       sqs_handler_mock.getQueueUrlParams.returns(queue_url_params);
       sqs_handler_mock.getQueueUrl.callsArgWithAsync(1, null, queue_url);
@@ -190,55 +157,41 @@ describe(__filename, function() {
     });
 
     it('should delete a message', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          receipt_handle = 'test_receipt_handle_' + Date.now(),
-          queue_url_params = { QueueName: queue_name },
-          queue_url = 'mocked-queue-url-for-' + queue_name;
+      var queue_name = 'test_queue_name_' + Date.now();
+      var receipt_handle = 'test_receipt_handle_' + Date.now();
+      var queue_url_params = { QueueName: queue_name };
+      var queue_url = 'mocked-queue-url-for-' + queue_name;
 
-      sqs_handler_mock.getQueueUrlParams.
-          throws('getQueueUrlParams not mocked for specified args').
-          withArgs(queue_name).
-          returns(queue_url_params);
+      sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
+          .withArgs(queue_name).returns(queue_url_params);
 
-      sqs_handler_mock.getQueueUrl.
-          throws('getQueueUrl not mocked for specified args').
-          withArgs(queue_url_params, sinon.match.func).
-          callsArgWithAsync(1, null, queue_url);
+      sqs_handler_mock.getQueueUrl.throws('getQueueUrl not mocked for specified args')
+          .withArgs(queue_url_params, sinon.match.func).callsArgWithAsync(1, null, queue_url);
 
-      sqs_handler_mock.deleteMessage.
-          throws('deleteMessage not mocked for specified args').
-          withArgs(queue_url, receipt_handle, sinon.match.func).
-          callsArgWithAsync(2, null);
+      sqs_handler_mock.deleteMessage.throws('deleteMessage not mocked for specified args')
+          .withArgs(queue_url, receipt_handle, sinon.match.func).callsArgWithAsync(2, null);
 
       message_queue.deleteMessage(queue_name, receipt_handle, function(err) {
         should.not.exist(err);
 
         sqs_handler_mock.getQueueUrlParams.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(
-            queue_name);
+        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
-            queue_url_params,
-            sinon.match.func);
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(queue_url_params, sinon.match.func);
         sqs_handler_mock.deleteMessage.should.have.callCount(1);
-        sqs_handler_mock.deleteMessage.should.be.calledWithExactly(
-            queue_url,
-            receipt_handle,
-            sinon.match.func);
+        sqs_handler_mock.deleteMessage.should.be.calledWithExactly(queue_url, receipt_handle, sinon.match.func);
 
         done();
       });
     });
 
     it('should callback with err if unable to get queue url', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          receipt_handle = 'test_receipt_handle_' + Date.now();
+      var queue_name = 'test_queue_name_' + Date.now();
+      var receipt_handle = 'test_receipt_handle_' + Date.now();
 
-      sqs_handler_mock.getQueueUrlParams.
-          returns({ QueueName: queue_name });
+      sqs_handler_mock.getQueueUrlParams.returns({ QueueName: queue_name });
 
-      sqs_handler_mock.getQueueUrl.
-          callsArgWithAsync(1, new Error('mock err from getQueueUrl'), null);
+      sqs_handler_mock.getQueueUrl.callsArgWithAsync(1, new Error('mock err from getQueueUrl'), null);
 
       message_queue.deleteMessage(queue_name, receipt_handle, function(err) {
         should.exist(err);
@@ -253,42 +206,30 @@ describe(__filename, function() {
     });
 
     it('should callback with err if delete fails', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          receipt_handle = 'test_receipt_handle_' + Date.now(),
-          queue_url_params = { QueueName: queue_name },
-          queue_url = 'mocked-queue-url-for-' + queue_name;
+      var queue_name = 'test_queue_name_' + Date.now();
+      var receipt_handle = 'test_receipt_handle_' + Date.now();
+      var queue_url_params = { QueueName: queue_name };
+      var queue_url = 'mocked-queue-url-for-' + queue_name;
 
-      sqs_handler_mock.getQueueUrlParams.
-          throws('getQueueUrlParams not mocked for specified args').
-          withArgs(queue_name).
-          returns(queue_url_params);
+      sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
+          .withArgs(queue_name).returns(queue_url_params);
 
-      sqs_handler_mock.getQueueUrl.
-          throws('getQueueUrl not mocked for specified args').
-          withArgs(queue_url_params, sinon.match.func).
-          callsArgWithAsync(1, null, queue_url);
+      sqs_handler_mock.getQueueUrl.throws('getQueueUrl not mocked for specified args')
+          .withArgs(queue_url_params, sinon.match.func).callsArgWithAsync(1, null, queue_url);
 
-      sqs_handler_mock.deleteMessage.
-          throws('deleteMessage not mocked for specified args').
-          withArgs(queue_url, receipt_handle, sinon.match.func).
-          callsArgWithAsync(2, new Error('mock err from deleteMessage'));
+      sqs_handler_mock.deleteMessage.throws('deleteMessage not mocked for specified args')
+          .withArgs(queue_url, receipt_handle, sinon.match.func).callsArgWithAsync(2, new Error('mock err from deleteMessage'));
 
       message_queue.deleteMessage(queue_name, receipt_handle, function(err) {
         should.exist(err);
         err.should.have.property('message', 'mock err from deleteMessage');
 
         sqs_handler_mock.getQueueUrlParams.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(
-            queue_name);
+        sqs_handler_mock.getQueueUrlParams.should.be.calledWithExactly(queue_name);
         sqs_handler_mock.getQueueUrl.should.have.callCount(1);
-        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(
-            queue_url_params,
-            sinon.match.func);
+        sqs_handler_mock.getQueueUrl.should.be.calledWithExactly(queue_url_params, sinon.match.func);
         sqs_handler_mock.deleteMessage.should.have.callCount(1);
-        sqs_handler_mock.deleteMessage.should.be.calledWithExactly(
-            queue_url,
-            receipt_handle,
-            sinon.match.func);
+        sqs_handler_mock.deleteMessage.should.be.calledWithExactly(queue_url, receipt_handle, sinon.match.func);
 
         done();
       });

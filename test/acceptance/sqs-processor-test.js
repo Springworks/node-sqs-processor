@@ -48,18 +48,14 @@ describe(__filename, function() {
         return true;
       })).callsArgWithAsync(1, null);
 
-      aws_sqs_mock.receiveMessage.
-        throws('aws_sqs_mock.receiveMessage too many times').
-        onCall(0).
-          callsArgWithAsync(1, null, {
+      aws_sqs_mock.receiveMessage.throws('aws_sqs_mock.receiveMessage too many times')
+          .onCall(0).callsArgWithAsync(1, null, {
             Messages: [mockMessage(0), mockMessage(1), mockMessage(2)]
-          }).
-        onCall(1).
-          callsArgWithAsync(1, null, {
+          })
+          .onCall(1).callsArgWithAsync(1, null, {
             Messages: []
-          }).
-        onCall(2).
-          callsArgWithAsync(1, null, {
+          })
+          .onCall(2).callsArgWithAsync(1, null, {
             Messages: [mockMessage(3)]
           });
 
@@ -84,13 +80,8 @@ describe(__filename, function() {
 
     it('should create the module with an AWS instance', function() {
       var fn = sinon.stub();
-
       fn.throws(new Error('should not call'));
-
-      sqs_processor_module.create(
-        fn,
-        test_util.getTestConfig(),
-        logger_mock);
+      sqs_processor_module.create(fn, test_util.getTestConfig(), logger_mock);
     });
 
   });
