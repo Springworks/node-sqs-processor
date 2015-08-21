@@ -2,7 +2,7 @@
 
 var EventEmitter = require('events').EventEmitter;
 var SQS = require('aws-sdk').SQS;
-var validator = require('input-validator');
+var validator = require('@springworks/input-validator');
 var config_schema = require('./lib/config-schema.js');
 var internals = {};
 
