@@ -1,20 +1,12 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
+var sqs_timeout_handler_module = require('../../lib/sqs-timeout-handler.js');
+var test_util = require('../../test-util/test-util.js');
 
-var sqs_timeout_handler_module = require('../../lib/sqs-timeout-handler.js'),
-    test_util = require('../../test-util/test-util.js');
-
-chai.should();
-chai.use(require('sinon-chai'));
-
-
-describe('unit/sqs-timeout-handler-test.js', function() {
-
-  var config,
-      logger,
-      sqs_timeout_handler;
+describe(__filename, function() {
+  var config;
+  var logger;
+  var sqs_timeout_handler;
 
   beforeEach(function() {
     config = test_util.getTestConfig();
@@ -28,9 +20,9 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     config.batch_force_threshold = 5;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var stop_function = sqs_timeout_handler.start(function(){});
-    stop_function.should.be.a('function');
-
+    var stop_function = sqs_timeout_handler.start(function() {
+    });
+    stop_function.should.be.a.Function();
   });
 
   it('should warn when timeout is called', function(done) {
@@ -43,10 +35,9 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler.start(cb);
 
     setTimeout(function() {
-      logger.warn.should.have.been.calledWithExactly('Forced to fetch a new batch manually');
+      logger.warn.should.be.calledWithExactly('Forced to fetch a new batch manually');
       done();
     }, 20);
-
   });
 
   it('should invoke callback when time runs out', function(done) {
@@ -58,22 +49,20 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler.start(cb);
 
     setTimeout(function() {
-      logger.warn.should.have.been.calledWithExactly('Forced to fetch a new batch manually');
-      cb.should.have.been.calledWithExactly(null);
+      logger.warn.should.be.calledWithExactly('Forced to fetch a new batch manually');
+      cb.should.be.calledWithExactly(null);
       done();
     }, 20);
   });
 
 
-  it('should not invoke callback when time runs out if it was cancelled first',
-    function(done) {
-
+  it('should not invoke callback when time runs out if it was cancelled first', function(done) {
     config.batch_timeout = 10;
     config.batch_force_threshold = 5;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var cb = sinon.stub(),
-        stop_function = sqs_timeout_handler.start(cb);
+    var cb = sinon.stub();
+    var stop_function = sqs_timeout_handler.start(cb);
 
     stop_function();
 
@@ -83,18 +72,16 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     }, 20);
   });
 
-  it('should invoke callback with error when more than force_threshould consecutive timeouts',
-    function(done) {
-
+  it('should invoke callback with error when more than force_threshould consecutive timeouts', function(done) {
     config.batch_timeout = 1;
     config.batch_force_threshold = 3;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var cb0 = sinon.stub(),
-        cb1 = sinon.stub(),
-        cb2 = sinon.stub(),
-        cb3 = sinon.stub(),
-        cb4 = sinon.stub();
+    var cb0 = sinon.stub();
+    var cb1 = sinon.stub();
+    var cb2 = sinon.stub();
+    var cb3 = sinon.stub();
+    var cb4 = sinon.stub();
 
     sqs_timeout_handler.start(cb0);
     sqs_timeout_handler.start(cb1);
@@ -103,48 +90,45 @@ describe('unit/sqs-timeout-handler-test.js', function() {
     sqs_timeout_handler.start(cb4);
 
     setTimeout(function() {
-      cb0.should.have.been.calledWithExactly(null);
-      cb1.should.have.been.calledWithExactly(null);
-      cb2.should.have.been.calledWithExactly(null);
-      cb3.should.have.been.calledWithExactly(sinon.match.instanceOf(Error));
-      cb4.should.have.been.calledWithExactly(sinon.match.instanceOf(Error));
+      cb0.should.be.calledWithExactly(null);
+      cb1.should.be.calledWithExactly(null);
+      cb2.should.be.calledWithExactly(null);
+      cb3.should.be.calledWithExactly(sinon.match.instanceOf(Error));
+      cb4.should.be.calledWithExactly(sinon.match.instanceOf(Error));
       done();
     }, 20);
   });
 
- it('should invoke callback with error when more ' +
-    'than force_threshould consecutive timeouts ' +
-    'and then return to normal if it starts working', function(done) {
-
+  it('should invoke callback with error when more than force_threshould consecutive timeouts and then return to normal if it starts working', function(done) {
     config.batch_timeout = 1;
     config.batch_force_threshold = 3;
     sqs_timeout_handler = sqs_timeout_handler_module.create(config, logger);
 
-    var cb0 = sinon.stub(),
-        cb1 = sinon.stub(),
-        cb2 = sinon.stub(),
-        cb3 = sinon.stub(),
-        cb4 = sinon.stub(),
-        cb5 = sinon.stub(),
-        stop_function;
+    var cb0 = sinon.stub();
+    var cb1 = sinon.stub();
+    var cb2 = sinon.stub();
+    var cb3 = sinon.stub();
+    var cb4 = sinon.stub();
+    var cb5 = sinon.stub();
+    var stop_function;
 
     sqs_timeout_handler.start(cb0);
 
     setTimeout(function() {
-      cb0.should.have.been.calledWithExactly(null);
+      cb0.should.be.calledWithExactly(null);
       sqs_timeout_handler.start(cb1);
 
       setTimeout(function() {
-        cb1.should.have.been.calledWithExactly(null);
+        cb1.should.be.calledWithExactly(null);
         sqs_timeout_handler.start(cb2);
 
         setTimeout(function() {
-          cb2.should.have.been.calledWithExactly(null);
+          cb2.should.be.calledWithExactly(null);
           sqs_timeout_handler.start(cb3);
 
           setTimeout(function() {
             // have error
-            cb3.should.have.been.calledWithExactly(sinon.match.instanceOf(Error));
+            cb3.should.be.calledWithExactly(sinon.match.instanceOf(Error));
             stop_function = sqs_timeout_handler.start(cb4);
 
             // clear the timeout
@@ -158,7 +142,7 @@ describe('unit/sqs-timeout-handler-test.js', function() {
 
             setTimeout(function() {
               // no error again
-              cb5.should.have.been.calledWithExactly(null);
+              cb5.should.be.calledWithExactly(null);
               done();
             }, 10); // note short timeout
           }, 10);

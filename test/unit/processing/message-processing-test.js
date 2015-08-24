@@ -1,19 +1,12 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
-
 var message_processing_module = require('../../../lib/processing/message-processing.js');
 
-chai.should();
-chai.use(require('sinon-chai'));
-
-
-describe('unit/processing/message-processing-test.js', function() {
-  var message_queue_mock,
-      logger_mock,
-      providedMessageProcessor,
-      message_processing;
+describe(__filename, function() {
+  var message_queue_mock;
+  var logger_mock;
+  var providedMessageProcessor;
+  var message_processing;
 
   beforeEach(function() {
     message_queue_mock = {
@@ -26,17 +19,14 @@ describe('unit/processing/message-processing-test.js', function() {
       error: sinon.stub()
     };
     providedMessageProcessor = sinon.stub();
-    message_processing = message_processing_module.create(
-        providedMessageProcessor,
-        message_queue_mock,
-        logger_mock);
+    message_processing = message_processing_module.create(providedMessageProcessor, message_queue_mock, logger_mock);
   });
 
   describe('processMessages', function() {
 
     it('should process a batch of messages', function(done) {
-      var sqs_messages = [getMockedMessage(), getMockedMessage()],
-          queue_name = 'queue_name ' + randomString();
+      var sqs_messages = [getMockedMessage(), getMockedMessage()];
+      var queue_name = 'queue_name ' + randomString();
 
       providedMessageProcessor.callsArgWithAsync(1, null);
       message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
@@ -50,25 +40,21 @@ describe('unit/processing/message-processing-test.js', function() {
     });
 
     it('should only delete successfully processed messages', function(done) {
-      var queue_name = 'queue_name ' + randomString(),
-          sqs_messages = [
-            getMockedMessage(),
-            getMockedMessage(),
-            getMockedMessage(),
-            getMockedMessage()
-          ];
+      var queue_name = 'queue_name ' + randomString();
+      var sqs_messages = [
+        getMockedMessage(),
+        getMockedMessage(),
+        getMockedMessage(),
+        getMockedMessage()
+      ];
 
       // Setup message processor to fail on the second message and throw on the third but
       // succeed on the first and fourth message.
-      providedMessageProcessor.
-          onCall(0).
-            callsArgWithAsync(1, null).
-          onCall(1).
-            callsArgWithAsync(1, new Error('Mock error from second message')).
-          onCall(2).
-            throws('Mock error from third message').
-          onCall(3).
-            callsArgWithAsync(1, null);
+      providedMessageProcessor
+          .onCall(0).callsArgWithAsync(1, null)
+          .onCall(1).callsArgWithAsync(1, new Error('Mock error from second message'))
+          .onCall(2).throws('Mock error from third message')
+          .onCall(3).callsArgWithAsync(1, null);
 
       message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
 
@@ -90,8 +76,8 @@ describe('unit/processing/message-processing-test.js', function() {
   describe('processMessage', function() {
 
     it('should process a single message', function(done) {
-      var queue_name = 'queue_name ' + randomString(),
-          sqs_message = getMockedMessage();
+      var queue_name = 'queue_name ' + randomString();
+      var sqs_message = getMockedMessage();
 
       providedMessageProcessor.callsArgWithAsync(1, null);
       message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
@@ -106,25 +92,19 @@ describe('unit/processing/message-processing-test.js', function() {
   });
 
   describe('handleProcessedMessage', function() {
-    var queue_name = 'queue_name ' + randomString(),
-        sqs_message = getMockedMessage();
+    var queue_name = 'queue_name ' + randomString();
+    var sqs_message = getMockedMessage();
 
     describe('with valid input and processed message', function() {
 
       it('should delete the processed message', function(done) {
-
         message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
-
-        message_processing.handleProcessedMessage(
-            null,
-            queue_name,
-            sqs_message,
-            function(err) {
-              logger_mock.trace.should.have.callCount(0);
-              logger_mock.warn.should.have.callCount(0);
-              message_queue_mock.deleteMessage.should.have.callCount(1);
-              done(err);
-            });
+        message_processing.handleProcessedMessage(null, queue_name, sqs_message, function(err) {
+          logger_mock.trace.should.have.callCount(0);
+          logger_mock.warn.should.have.callCount(0);
+          message_queue_mock.deleteMessage.should.have.callCount(1);
+          done(err);
+        });
       });
 
     });
@@ -132,16 +112,12 @@ describe('unit/processing/message-processing-test.js', function() {
     describe('with error from processMessage()', function() {
 
       it('should callback immediately without passing err', function(done) {
-        message_processing.handleProcessedMessage(
-            new Error('Error from processMessage'),
-            queue_name,
-            sqs_message,
-            function(err) {
-              logger_mock.trace.should.have.callCount(0);
-              logger_mock.warn.should.have.callCount(1);
-              message_queue_mock.deleteMessage.should.have.callCount(0);
-              done(err);
-            });
+        message_processing.handleProcessedMessage(new Error('Error from processMessage'), queue_name, sqs_message, function(err) {
+          logger_mock.trace.should.have.callCount(0);
+          logger_mock.warn.should.have.callCount(1);
+          message_queue_mock.deleteMessage.should.have.callCount(0);
+          done(err);
+        });
       });
 
     });
@@ -149,22 +125,15 @@ describe('unit/processing/message-processing-test.js', function() {
     describe('with failing deleteMessage()', function() {
 
       it('should callback with err', function(done) {
-        message_queue_mock.deleteMessage.
-            callsArgWithAsync(2, new Error('Mock err from deleteMessage'));
+        message_queue_mock.deleteMessage.callsArgWithAsync(2, new Error('Mock err from deleteMessage'));
 
-        message_processing.handleProcessedMessage(
-            null,
-            queue_name,
-            sqs_message,
-            function(err) {
-              logger_mock.trace.should.have.callCount(0);
-              logger_mock.warn.should.have.callCount(1);
-              logger_mock.warn.should.have.been.calledWithExactly(
-                  sinon.match.object,
-                  'Error deleting message');
-              message_queue_mock.deleteMessage.should.have.callCount(1);
-              done(err);
-            });
+        message_processing.handleProcessedMessage(null, queue_name, sqs_message, function(err) {
+          logger_mock.trace.should.have.callCount(0);
+          logger_mock.warn.should.have.callCount(1);
+          logger_mock.warn.should.be.calledWithExactly(sinon.match.object, 'Error deleting message');
+          message_queue_mock.deleteMessage.should.have.callCount(1);
+          done(err);
+        });
       });
 
     });
@@ -174,15 +143,11 @@ describe('unit/processing/message-processing-test.js', function() {
       it('should invoke callback and not delete message', function(done) {
         message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
         var invalid_sqs_message_param = {};
-        message_processing.handleProcessedMessage(
-            null,
-            queue_name,
-            invalid_sqs_message_param,
-            function(err) {
-              logger_mock.warn.should.have.callCount(1);
-              message_queue_mock.deleteMessage.should.have.callCount(0);
-              done(err);
-            });
+        message_processing.handleProcessedMessage(null, queue_name, invalid_sqs_message_param, function(err) {
+          logger_mock.warn.should.have.callCount(1);
+          message_queue_mock.deleteMessage.should.have.callCount(0);
+          done(err);
+        });
       });
 
     });

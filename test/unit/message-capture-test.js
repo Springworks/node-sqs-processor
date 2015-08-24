@@ -1,20 +1,12 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
-
 var message_capture_module = require('../../lib/message-capture.js');
 
-var should = chai.should();
-
-chai.use(require('sinon-chai'));
-
-
-describe('unit/message-capture-test.js', function() {
-  var message_queue_mock,
-      message_processing_mock,
-      logger_mock,
-      message_capture;
+describe(__filename, function() {
+  var message_queue_mock;
+  var message_processing_mock;
+  var logger_mock;
+  var message_capture;
 
   beforeEach(function() {
     message_queue_mock = { receiveQueueMessages: sinon.stub() };
@@ -29,8 +21,8 @@ describe('unit/message-capture-test.js', function() {
   describe('receiveMessageBatch', function() {
 
     it('should receive a message batch from specified queue', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          sqs_messages = ['test message'];
+      var queue_name = 'test_queue_name_' + Date.now();
+      var sqs_messages = ['test message'];
 
       message_queue_mock.receiveQueueMessages.callsArgWithAsync(1, null, sqs_messages);
       message_processing_mock.processMessages.callsArgWithAsync(2, null);
@@ -42,11 +34,11 @@ describe('unit/message-capture-test.js', function() {
         logger_mock.info.should.have.callCount(2);
         logger_mock.warn.should.have.callCount(0);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
-        message_queue_mock.receiveQueueMessages.should.have.been.calledWith(
+        message_queue_mock.receiveQueueMessages.should.be.calledWith(
             queue_name,
             sinon.match.func);
         message_processing_mock.processMessages.should.have.callCount(1);
-        message_processing_mock.processMessages.should.have.been.calledWith(
+        message_processing_mock.processMessages.should.be.calledWith(
             sqs_messages,
             queue_name,
             sinon.match.func);
@@ -68,7 +60,7 @@ describe('unit/message-capture-test.js', function() {
         logger_mock.info.should.have.callCount(1);
         logger_mock.warn.should.have.callCount(0);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
-        message_queue_mock.receiveQueueMessages.should.have.been.calledWith(
+        message_queue_mock.receiveQueueMessages.should.be.calledWith(
             queue_name,
             sinon.match.func);
         message_processing_mock.processMessages.should.have.callCount(0);
@@ -90,12 +82,12 @@ describe('unit/message-capture-test.js', function() {
         logger_mock.debug.should.have.callCount(0);
         logger_mock.info.should.have.callCount(0);
         logger_mock.warn.should.have.callCount(1);
-        logger_mock.warn.should.have.been.calledWithExactly(
+        logger_mock.warn.should.be.calledWithExactly(
             sqs_err,
             'Error receiving messages for queue %s',
             queue_name);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
-        message_queue_mock.receiveQueueMessages.should.have.been.calledWith(
+        message_queue_mock.receiveQueueMessages.should.be.calledWith(
             queue_name,
             sinon.match.func);
         message_processing_mock.processMessages.should.have.callCount(0);

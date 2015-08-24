@@ -1,4 +1,4 @@
-# m2h-sqs-processor
+# sqs-processor
 
 Module for SQS queue processing
 
@@ -19,7 +19,7 @@ Module for SQS queue processing
 ### Iterator
 
 The function passed as the first argument to `create` is intended to implement the handling of queued messages.
-It will be applied to each message as they are fetched from the queue. The iterator is alse passed a `callback(err)` which must be called once it has completed. If no error has occured, the callback should be run without arguments or with an explicit null argument.
+It will be applied to each message as they are fetched from the queue. The iterator is also passed a `callback(err)` which must be called once it has completed. If no error has occurred, the callback should be run without arguments or with an explicit null argument.
 
 
 ### Module config

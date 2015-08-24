@@ -1,16 +1,9 @@
 'use strict';
 
-var chai = require('chai'),
-    sinon = require('sinon');
+var sqs_processor_module = require('../..');
+var test_util = require('../../test-util/test-util.js');
 
-var sqs_processor_module = require('../..'),
-    test_util = require('../../test-util/test-util.js');
-
-chai.should();
-chai.use(require('sinon-chai'));
-
-
-describe('acceptance/sqs-processor-test.js', function() {
+describe(__filename, function() {
   var aws_sqs_mock,
       iterator,
       logger_mock,
@@ -55,18 +48,14 @@ describe('acceptance/sqs-processor-test.js', function() {
         return true;
       })).callsArgWithAsync(1, null);
 
-      aws_sqs_mock.receiveMessage.
-        throws('aws_sqs_mock.receiveMessage too many times').
-        onCall(0).
-          callsArgWithAsync(1, null, {
+      aws_sqs_mock.receiveMessage.throws('aws_sqs_mock.receiveMessage too many times')
+          .onCall(0).callsArgWithAsync(1, null, {
             Messages: [mockMessage(0), mockMessage(1), mockMessage(2)]
-          }).
-        onCall(1).
-          callsArgWithAsync(1, null, {
+          })
+          .onCall(1).callsArgWithAsync(1, null, {
             Messages: []
-          }).
-        onCall(2).
-          callsArgWithAsync(1, null, {
+          })
+          .onCall(2).callsArgWithAsync(1, null, {
             Messages: [mockMessage(3)]
           });
 
@@ -91,13 +80,8 @@ describe('acceptance/sqs-processor-test.js', function() {
 
     it('should create the module with an AWS instance', function() {
       var fn = sinon.stub();
-
       fn.throws(new Error('should not call'));
-
-      sqs_processor_module.create(
-        fn,
-        test_util.getTestConfig(),
-        logger_mock);
+      sqs_processor_module.create(fn, test_util.getTestConfig(), logger_mock);
     });
 
   });

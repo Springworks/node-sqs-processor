@@ -1,6 +1,6 @@
 'use strict';
 
-var validator = require('input-validator');
+var validator = require('@springworks/input-validator');
 var config_schema = require('../lib/config-schema.js');
 
 

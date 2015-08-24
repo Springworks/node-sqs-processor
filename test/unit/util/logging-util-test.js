@@ -1,17 +1,12 @@
 'use strict';
 
-var chai = require('chai');
-
 var logging_util = require('../../../lib/util/logging-util.js');
 
-var formattedPayload = logging_util.formattedPayload,
-    payloadForSQSMessage = logging_util.payloadForSQSMessage,
-    payloadDate = logging_util.payloadDate;
+var formattedPayload = logging_util.formattedPayload;
+var payloadForSQSMessage = logging_util.payloadForSQSMessage;
+var payloadDate = logging_util.payloadDate;
 
-chai.should();
-
-
-describe('unit/util/logging-util-test.js', function() {
+describe(__filename, function() {
 
   describe('formattedPayload', function() {
 
