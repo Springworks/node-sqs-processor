@@ -12,7 +12,7 @@
   "dependencies": {
     "@springworks/error-factory": "^1.2.3",
     "@springworks/input-validator": "^3.0.0",
-    "async": "^0.9.0",
+    "async": "^1.4.2",
     "aws-sdk": "^2.0.25"
   },
   "devDependencies": {
