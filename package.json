@@ -19,7 +19,7 @@
     "@springworks/test-harness": "1.0.3",
     "coveralls": "2.11.4",
     "eslint": "1.5.1",
-    "eslint-config-springworks": "2.6.1",
+    "eslint-config-springworks": "3.1.1",
     "eslint-plugin-mocha": "0.5.1",
     "istanbul": "0.3.21",
     "mocha": "2.3.3"
