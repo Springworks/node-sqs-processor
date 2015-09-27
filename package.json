@@ -10,19 +10,19 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "@springworks/error-factory": "^1.2.3",
-    "@springworks/input-validator": "^3.0.0",
-    "async": "^1.4.2",
-    "aws-sdk": "^2.0.25"
+    "@springworks/error-factory": "1.2.3",
+    "@springworks/input-validator": "3.0.0",
+    "async": "1.4.2",
+    "aws-sdk": "2.2.4"
   },
   "devDependencies": {
-    "@springworks/test-harness": "^1.0.3",
-    "coveralls": "^2.11.4",
-    "eslint": "^1.2.1",
-    "eslint-config-springworks": "^2.5.0",
-    "eslint-plugin-mocha": "^0.5.1",
-    "istanbul": "^0.3.18",
-    "mocha": "^2.2.5"
+    "@springworks/test-harness": "1.0.3",
+    "coveralls": "2.11.4",
+    "eslint": "1.5.1",
+    "eslint-config-springworks": "2.6.1",
+    "eslint-plugin-mocha": "0.5.1",
+    "istanbul": "0.3.21",
+    "mocha": "2.3.3"
   },
   "repository": {
     "type": "git",
