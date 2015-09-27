@@ -32,4 +32,4 @@ node_modules
 
 coverage
 
-/config/runtime.json
+.eslintcache
