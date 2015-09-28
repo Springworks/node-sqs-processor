@@ -10,13 +10,13 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "@springworks/error-factory": "1.2.3",
-    "@springworks/input-validator": "3.0.0",
+    "@springworks/error-factory": "1.2.5",
+    "@springworks/input-validator": "3.0.2",
     "async": "1.4.2",
     "aws-sdk": "2.2.4"
   },
   "devDependencies": {
-    "@springworks/test-harness": "1.0.3",
+    "@springworks/test-harness": "1.0.5",
     "coveralls": "2.11.4",
     "eslint": "1.5.1",
     "eslint-config-springworks": "3.1.1",
