@@ -18,7 +18,7 @@
   "devDependencies": {
     "@springworks/test-harness": "1.0.5",
     "coveralls": "2.11.4",
-    "eslint": "1.10.2",
+    "eslint": "1.10.3",
     "eslint-config-springworks": "5.0.0",
     "eslint-plugin-import": "0.11.0",
     "eslint-plugin-mocha": "1.1.0",
