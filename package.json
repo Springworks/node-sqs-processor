@@ -13,7 +13,7 @@
     "@springworks/error-factory": "1.2.5",
     "@springworks/input-validator": "3.0.2",
     "async": "1.5.0",
-    "aws-sdk": "2.2.22"
+    "aws-sdk": "2.2.23"
   },
   "devDependencies": {
     "@springworks/test-harness": "1.0.5",
