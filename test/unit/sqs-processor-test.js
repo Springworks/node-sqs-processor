@@ -3,14 +3,14 @@
 const sqs_processor_module = require('../../lib/sqs-processor');
 const test_util = require('../../test-util/test-util');
 
-describe('test/unit/sqs-processor-test.js', function() {
+describe('test/unit/sqs-processor-test.js', () => {
   let sqs_processor;
   let message_capture_mock;
   let logger_mock;
   let sqs_timeout_handler_mock;
   let emitter_mock;
 
-  beforeEach(function() {
+  beforeEach(() => {
     logger_mock = {};
     logger_mock.info = sinon.stub();
     logger_mock.warn = sinon.stub();
@@ -34,9 +34,9 @@ describe('test/unit/sqs-processor-test.js', function() {
         logger_mock);
   });
 
-  describe('starting', function() {
+  describe('starting', () => {
 
-    it('should receive the next message batch directly when it is started', function(done) {
+    it('should receive the next message batch directly when it is started', done => {
       const stopper_func = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
       sqs_timeout_handler_mock.start = sinon.stub();
@@ -49,7 +49,7 @@ describe('test/unit/sqs-processor-test.js', function() {
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
       sqs_timeout_handler_mock.start.should.be.calledWith(sinon.match.func);
 
-      process.nextTick(function() {
+      process.nextTick(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, null);
         stopper_func.should.be.calledWith();
         done();
@@ -58,7 +58,7 @@ describe('test/unit/sqs-processor-test.js', function() {
     });
 
 
-    it('should warn if no messages can be fetched', function(done) {
+    it('should warn if no messages can be fetched', done => {
       const stopper_func = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
 
@@ -72,7 +72,7 @@ describe('test/unit/sqs-processor-test.js', function() {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(function() {
+      process.nextTick(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, new Error('smackzors'));
         logger_mock.warn.should.be.calledWith(new Error('smackzors'), 'An error occurred during message capturing');
         done();
@@ -80,7 +80,7 @@ describe('test/unit/sqs-processor-test.js', function() {
 
     });
 
-    it('should fetch a new message batch when done with current batch', function(done) {
+    it('should fetch a new message batch when done with current batch', done => {
       const stopper_func0 = sinon.stub();
       const stopper_func1 = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
@@ -95,10 +95,10 @@ describe('test/unit/sqs-processor-test.js', function() {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(function() {
+      process.nextTick(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, null);
         stopper_func0.should.be.calledWith();
-        process.nextTick(function() {
+        process.nextTick(() => {
           message_capture_mock.receiveMessageBatch.should.have.callCount(2);
           sqs_processor.stopAfterCurrentBatch();
           done();
@@ -107,7 +107,7 @@ describe('test/unit/sqs-processor-test.js', function() {
     });
 
     it('should fetch a new message batch when done' +
-       'with current batch even if there is an error', function(done) {
+       'with current batch even if there is an error', done => {
       const stopper_func0 = sinon.stub();
       const stopper_func1 = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
@@ -122,11 +122,11 @@ describe('test/unit/sqs-processor-test.js', function() {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(function() {
+      process.nextTick(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, new Error('message'));
         stopper_func0.should.be.calledWith();
 
-        process.nextTick(function() {
+        process.nextTick(() => {
           message_capture_mock.receiveMessageBatch.should.have.callCount(2);
           done();
         });
@@ -135,7 +135,7 @@ describe('test/unit/sqs-processor-test.js', function() {
 
     });
 
-    it('should ignore a second call to startProcessingQueue', function() {
+    it('should ignore a second call to startProcessingQueue', () => {
       const stopper_func = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
       sqs_timeout_handler_mock.start = sinon.stub();
@@ -148,7 +148,7 @@ describe('test/unit/sqs-processor-test.js', function() {
       sqs_timeout_handler_mock.start.should.have.callCount(1);
     });
 
-    it('should force a new batch if the current batch timesout', function(done) {
+    it('should force a new batch if the current batch timesout', done => {
       const stopper_func0 = sinon.stub();
       const stopper_func1 = sinon.stub();
 
@@ -165,12 +165,12 @@ describe('test/unit/sqs-processor-test.js', function() {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(function() {
+      process.nextTick(() => {
         // call the timeout callback instead of the message_capture timeout
         sqs_timeout_handler_mock.start.callArgWith(0, null);
         stopper_func0.should.have.callCount(0);
 
-        process.nextTick(function() {
+        process.nextTick(() => {
           // stop should not have been called sine the timeout have cleared it
           stopper_func1.should.have.callCount(0);
 
@@ -183,7 +183,7 @@ describe('test/unit/sqs-processor-test.js', function() {
       });
     });
 
-    it('should NOT force a new batch if timeout handler throws exception', function(done) {
+    it('should NOT force a new batch if timeout handler throws exception', done => {
       const stopper_func0 = sinon.stub();
       const stopper_func1 = sinon.stub();
 
@@ -200,7 +200,7 @@ describe('test/unit/sqs-processor-test.js', function() {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(function() {
+      process.nextTick(() => {
 
         // call the timeout callback instead of the message_capture timeout
         sqs_timeout_handler_mock.start.callArgWith(0, new Error('stop'));
@@ -222,7 +222,7 @@ describe('test/unit/sqs-processor-test.js', function() {
       });
     });
 
-    it('should not start a new batch if done case already started one when timing out', function(done) {
+    it('should not start a new batch if done case already started one when timing out', done => {
       const stopper_func0 = sinon.stub();
       const stopper_func1 = sinon.stub();
 
@@ -244,8 +244,8 @@ describe('test/unit/sqs-processor-test.js', function() {
       sqs_processor.startProcessingQueue();
 
       //wait two ticks
-      process.nextTick(function() {
-        process.nextTick(function() {
+      process.nextTick(() => {
+        process.nextTick(() => {
           message_capture_mock.receiveMessageBatch.should.have.callCount(2);
           sqs_timeout_handler_mock.start.should.have.callCount(2);
           done();

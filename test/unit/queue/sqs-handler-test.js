@@ -3,21 +3,21 @@
 const sqs_handler_module = require('../../../lib/queue/sqs-handler');
 const test_util = require('../../../test-util/test-util');
 
-describe('test/unit/queue/sqs-handler-test.js', function() {
+describe('test/unit/queue/sqs-handler-test.js', () => {
   let sqs_handler;
   let aws_sqs;
   let logger;
   let config;
 
-  beforeEach(function() {
+  beforeEach(() => {
     aws_sqs = {};
     logger = {};
     config = test_util.getTestConfig();
   });
 
-  describe('Getting SQS queue URL', function() {
+  describe('Getting SQS queue URL', () => {
 
-    it('should provide params required to find URL by name', function(done) {
+    it('should provide params required to find URL by name', done => {
       const params = { someparam: 'mockedparam' };
       const mockdata = { QueueUrl: 'https://www.mock.com' };
 
@@ -27,7 +27,7 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
 
-      sqs_handler.getQueueUrl(params, function(err, url) {
+      sqs_handler.getQueueUrl(params, (err, url) => {
         should.not.exist(err);
         url.should.eql('https://www.mock.com');
         done();
@@ -35,7 +35,7 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
     });
 
-    it('should callback with error when error', function(done) {
+    it('should callback with error when error', done => {
       const params = { someparam: 'mockedparam' };
 
       aws_sqs.getQueueUrl = sinon.stub();
@@ -44,7 +44,7 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
 
-      sqs_handler.getQueueUrl(params, function(err, url) {
+      sqs_handler.getQueueUrl(params, (err, url) => {
         should.exist(err);
         should.not.exist(url);
         done();
@@ -54,9 +54,9 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
   });
 
-  describe('Receiving Message Batch', function() {
+  describe('Receiving Message Batch', () => {
 
-    it('should receive message batch', function(done) {
+    it('should receive message batch', done => {
       const url = 'queue_url';
       let expected_params;
 
@@ -76,7 +76,7 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
 
-      sqs_handler.receiveMessageBatch(url, function(err, data) {
+      sqs_handler.receiveMessageBatch(url, (err, data) => {
         should.not.exist(err);
         data.should.eql({ Message: 'abc123' });
         done();
@@ -84,7 +84,7 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
     });
 
-    it('should handle error from aws_sqs', function(done) {
+    it('should handle error from aws_sqs', done => {
       const url = 'queue_url';
       let expected_params;
 
@@ -104,7 +104,7 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
 
-      sqs_handler.receiveMessageBatch(url, function(err, data) {
+      sqs_handler.receiveMessageBatch(url, (err, data) => {
         should.not.exist(data);
         err.should.be.instanceOf(Error);
         done();
@@ -114,9 +114,9 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
   });
 
-  describe('Getting queue url params', function() {
+  describe('Getting queue url params', () => {
 
-    it('should get the queue url params', function() {
+    it('should get the queue url params', () => {
       let result;
       const url = 'sqs_url';
 
@@ -128,9 +128,9 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
   });
 
-  describe('Getting receive message params', function() {
+  describe('Getting receive message params', () => {
 
-    it('should get the receive message params', function() {
+    it('should get the receive message params', () => {
       let result;
       const url = 'sqs_url';
       const expected_params = {
@@ -148,9 +148,9 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
   });
 
-  describe('Deleting messages', function() {
+  describe('Deleting messages', () => {
 
-    it('should delete messages', function(done) {
+    it('should delete messages', done => {
       const queue_url = 'sqs_url';
       const receipt_handle = 'receipt_handle';
 
@@ -160,14 +160,14 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
 
-      sqs_handler.deleteMessage(queue_url, receipt_handle, function(err, data) {
+      sqs_handler.deleteMessage(queue_url, receipt_handle, (err, data) => {
         should.not.exist(err);
         should.not.exist(data); // data is also supposed to be null
         done();
       });
     });
 
-    it('should handle error', function(done) {
+    it('should handle error', done => {
       const queue_url = 'sqs_url';
       const receipt_handle = 'receipt_handle';
 
@@ -177,7 +177,7 @@ describe('test/unit/queue/sqs-handler-test.js', function() {
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
 
-      sqs_handler.deleteMessage(queue_url, receipt_handle, function(err, data) {
+      sqs_handler.deleteMessage(queue_url, receipt_handle, (err, data) => {
         err.should.be.instanceOf(Error);
         should.not.exist(data); // data is also supposed to be null
         done();

@@ -3,13 +3,13 @@
 const sqs_processor_module = require('../..');
 const test_util = require('../../test-util/test-util');
 
-describe('test/acceptance/sqs-processor-test.js', function() {
+describe('test/acceptance/sqs-processor-test.js', () => {
   let aws_sqs_mock;
   let iterator;
   let logger_mock;
   let sqs_processor;
 
-  beforeEach(function() {
+  beforeEach(() => {
     aws_sqs_mock = {
       receiveMessage: sinon.stub(),
       getQueueUrl: sinon.stub(),
@@ -34,12 +34,12 @@ describe('test/acceptance/sqs-processor-test.js', function() {
         logger_mock);
   });
 
-  describe('Happy', function() {
+  describe('Happy', () => {
 
-    it('should be happy', function(done) {
+    it('should be happy', done => {
       let counter = 0;
 
-      iterator.withArgs(sinon.match(function(value) {
+      iterator.withArgs(sinon.match(value => {
         counter += 1;
         // Count number of messages and stop the recursive loop after 4
         if (counter === 4) {
@@ -64,10 +64,10 @@ describe('test/acceptance/sqs-processor-test.js', function() {
 
       sqs_processor.startProcessingQueue();
 
-      setTimeout(function() {
+      setTimeout(() => {
         iterator.should.have.callCount(4);
 
-        [0, 1, 2, 3].forEach(function(i) {
+        [0, 1, 2, 3].forEach(i => {
           iterator.getCall(i).args[0].should.eql(mockMessage(i));
         });
 
@@ -78,7 +78,7 @@ describe('test/acceptance/sqs-processor-test.js', function() {
       }, 100);
     });
 
-    it('should create the module with an AWS instance', function() {
+    it('should create the module with an AWS instance', () => {
       const fn = sinon.stub();
       fn.throws(new Error('should not call'));
       sqs_processor_module.create(fn, test_util.getTestConfig(), logger_mock);
@@ -86,7 +86,7 @@ describe('test/acceptance/sqs-processor-test.js', function() {
 
   });
 
-  describe('Sad', function() {
+  describe('Sad', () => {
 
     it('should be sad');
 
