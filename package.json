@@ -6,17 +6,17 @@
   "scripts": {
     "test": "NODE_ENV=test istanbul cover _mocha -- test",
     "test-no-cov": "NODE_ENV=test mocha test",
-    "lint": "eslint .",
+    "lint": "eslint --cache .",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "@springworks/error-factory": "1.2.5",
-    "@springworks/input-validator": "3.0.2",
+    "@springworks/error-factory": "2.0.2",
+    "@springworks/input-validator": "4.0.1",
     "async": "1.5.0",
     "aws-sdk": "2.2.25"
   },
   "devDependencies": {
-    "@springworks/test-harness": "1.0.5",
+    "@springworks/test-harness": "1.2.3",
     "coveralls": "2.11.6",
     "eslint": "1.10.3",
     "eslint-config-springworks": "6.0.0",
