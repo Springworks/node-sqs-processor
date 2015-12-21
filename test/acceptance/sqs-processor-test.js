@@ -1,19 +1,19 @@
 'use strict';
 
-var sqs_processor_module = require('../..');
-var test_util = require('../../test-util/test-util.js');
+const sqs_processor_module = require('../..');
+const test_util = require('../../test-util/test-util');
 
-describe(__filename, function() {
-  var aws_sqs_mock,
-      iterator,
-      logger_mock,
-      sqs_processor;
+describe('test/acceptance/sqs-processor-test.js', () => {
+  let aws_sqs_mock;
+  let iterator;
+  let logger_mock;
+  let sqs_processor;
 
-  beforeEach(function() {
+  beforeEach(() => {
     aws_sqs_mock = {
       receiveMessage: sinon.stub(),
       getQueueUrl: sinon.stub(),
-      deleteMessage: sinon.stub()
+      deleteMessage: sinon.stub(),
     };
 
     logger_mock = {
@@ -22,7 +22,7 @@ describe(__filename, function() {
       error: sinon.stub(),
       trace: sinon.stub(),
       fatal: sinon.stub(),
-      debug: sinon.stub()
+      debug: sinon.stub(),
     };
 
     iterator = sinon.stub();
@@ -34,12 +34,12 @@ describe(__filename, function() {
         logger_mock);
   });
 
-  describe('Happy', function() {
+  describe('Happy', () => {
 
-    it('should be happy', function(done) {
-      var counter = 0;
+    it('should be happy', done => {
+      let counter = 0;
 
-      iterator.withArgs(sinon.match(function(value) {
+      iterator.withArgs(sinon.match(value => {
         counter += 1;
         // Count number of messages and stop the recursive loop after 4
         if (counter === 4) {
@@ -50,13 +50,13 @@ describe(__filename, function() {
 
       aws_sqs_mock.receiveMessage.throws('aws_sqs_mock.receiveMessage too many times')
           .onCall(0).callsArgWithAsync(1, null, {
-            Messages: [mockMessage(0), mockMessage(1), mockMessage(2)]
+            Messages: [mockMessage(0), mockMessage(1), mockMessage(2)],
           })
           .onCall(1).callsArgWithAsync(1, null, {
-            Messages: []
+            Messages: [],
           })
           .onCall(2).callsArgWithAsync(1, null, {
-            Messages: [mockMessage(3)]
+            Messages: [mockMessage(3)],
           });
 
       aws_sqs_mock.getQueueUrl.callsArgWithAsync(1, null, 'mocked queue url');
@@ -64,10 +64,10 @@ describe(__filename, function() {
 
       sqs_processor.startProcessingQueue();
 
-      setTimeout(function() {
+      setTimeout(() => {
         iterator.should.have.callCount(4);
 
-        [0, 1, 2, 3].forEach(function(i) {
+        [0, 1, 2, 3].forEach(i => {
           iterator.getCall(i).args[0].should.eql(mockMessage(i));
         });
 
@@ -78,20 +78,19 @@ describe(__filename, function() {
       }, 100);
     });
 
-    it('should create the module with an AWS instance', function() {
-      var fn = sinon.stub();
+    it('should create the module with an AWS instance', () => {
+      const fn = sinon.stub();
       fn.throws(new Error('should not call'));
       sqs_processor_module.create(fn, test_util.getTestConfig(), logger_mock);
     });
 
   });
 
-  describe('Sad', function() {
+  describe('Sad', () => {
 
     it('should be sad');
 
   });
-
 });
 
 
@@ -99,6 +98,6 @@ function mockMessage(id) {
   return {
     MessageId: id,
     ReceiptHandle: 'ReceiptHandle ' + id,
-    Body: JSON.stringify({ mock_data: 'body of message ' + id })
+    Body: JSON.stringify({ mock_data: 'body of message ' + id }),
   };
 }
