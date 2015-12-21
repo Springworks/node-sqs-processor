@@ -1,13 +1,13 @@
 'use strict';
 
-var sqs_handler_module = require('../../../lib/queue/sqs-handler.js');
-var test_util = require('../../../test-util/test-util.js');
+const sqs_handler_module = require('../../../lib/queue/sqs-handler');
+const test_util = require('../../../test-util/test-util');
 
-describe(__filename, function() {
-  var sqs_handler;
-  var aws_sqs;
-  var logger;
-  var config;
+describe('test/unit/queue/sqs-handler-test.js', function() {
+  let sqs_handler;
+  let aws_sqs;
+  let logger;
+  let config;
 
   beforeEach(function() {
     aws_sqs = {};
@@ -18,8 +18,8 @@ describe(__filename, function() {
   describe('Getting SQS queue URL', function() {
 
     it('should provide params required to find URL by name', function(done) {
-      var params = { someparam: 'mockedparam' };
-      var mockdata = { QueueUrl: 'https://www.mock.com' };
+      const params = { someparam: 'mockedparam' };
+      const mockdata = { QueueUrl: 'https://www.mock.com' };
 
       aws_sqs.getQueueUrl = sinon.stub();
       aws_sqs.getQueueUrl.throws('not mocked args')
@@ -36,7 +36,7 @@ describe(__filename, function() {
     });
 
     it('should callback with error when error', function(done) {
-      var params = { someparam: 'mockedparam' };
+      const params = { someparam: 'mockedparam' };
 
       aws_sqs.getQueueUrl = sinon.stub();
       aws_sqs.getQueueUrl.throws('not mocked args')
@@ -57,15 +57,15 @@ describe(__filename, function() {
   describe('Receiving Message Batch', function() {
 
     it('should receive message batch', function(done) {
-      var url = 'queue_url';
-      var expected_params;
+      const url = 'queue_url';
+      let expected_params;
 
       expected_params = {
         QueueUrl: 'http://www.mock.com',
         VisibilityTimeout: 5,
         WaitTimeSeconds: 5,
         AttributeNames: ['All'],
-        MaxNumberOfMessages: 10
+        MaxNumberOfMessages: 10,
       };
 
       logger.debug = sinon.stub().throws('debug not mocked for args')
@@ -85,15 +85,15 @@ describe(__filename, function() {
     });
 
     it('should handle error from aws_sqs', function(done) {
-      var url = 'queue_url';
-      var expected_params;
+      const url = 'queue_url';
+      let expected_params;
 
       expected_params = {
         QueueUrl: 'http://www.mock.com',
         VisibilityTimeout: 5,
         WaitTimeSeconds: 5,
         AttributeNames: ['All'],
-        MaxNumberOfMessages: 10
+        MaxNumberOfMessages: 10,
       };
 
       logger.debug = sinon.stub().throws('debug not mocked for args')
@@ -117,8 +117,8 @@ describe(__filename, function() {
   describe('Getting queue url params', function() {
 
     it('should get the queue url params', function() {
-      var result;
-      var url = 'sqs_url';
+      let result;
+      const url = 'sqs_url';
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
       result = sqs_handler.getQueueUrlParams(url);
@@ -131,14 +131,14 @@ describe(__filename, function() {
   describe('Getting receive message params', function() {
 
     it('should get the receive message params', function() {
-      var result;
-      var url = 'sqs_url';
-      var expected_params = {
+      let result;
+      const url = 'sqs_url';
+      const expected_params = {
         QueueUrl: url,
         VisibilityTimeout: 5,
         WaitTimeSeconds: 5,
         AttributeNames: ['All'],
-        MaxNumberOfMessages: 10
+        MaxNumberOfMessages: 10,
       };
 
       sqs_handler = sqs_handler_module.create(aws_sqs, config, logger);
@@ -151,8 +151,8 @@ describe(__filename, function() {
   describe('Deleting messages', function() {
 
     it('should delete messages', function(done) {
-      var queue_url = 'sqs_url';
-      var receipt_handle = 'receipt_handle';
+      const queue_url = 'sqs_url';
+      const receipt_handle = 'receipt_handle';
 
       aws_sqs.deleteMessage = sinon.stub().throws('aws_sqs not mocked for args')
           .withArgs({ QueueUrl: queue_url, ReceiptHandle: receipt_handle }, sinon.match.func)
@@ -168,8 +168,8 @@ describe(__filename, function() {
     });
 
     it('should handle error', function(done) {
-      var queue_url = 'sqs_url';
-      var receipt_handle = 'receipt_handle';
+      const queue_url = 'sqs_url';
+      const receipt_handle = 'receipt_handle';
 
       aws_sqs.deleteMessage = sinon.stub().throws('aws_sqs not mocked for args')
           .withArgs({ QueueUrl: queue_url, ReceiptHandle: receipt_handle }, sinon.match.func)

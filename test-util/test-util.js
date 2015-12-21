@@ -1,7 +1,7 @@
 'use strict';
 
-var validator = require('@springworks/input-validator');
-var config_schema = require('../lib/config-schema.js');
+const validator = require('@springworks/input-validator');
+const config_schema = require('../lib/config-schema');
 
 
 /**
@@ -10,12 +10,12 @@ var config_schema = require('../lib/config-schema.js');
  * @return  {Object}  A valid config object.
  */
 exports.getTestConfig = function() {
-  var config = {
+  const config = {
     queue_name: 'test_queue_name',
     batch_timeout: 10,
     batch_force_threshold: 3,
     visibility_timeout: 5,
-    wait_time_seconds: 5
+    wait_time_seconds: 5,
   };
 
   return validator.validateSchema(config, config_schema);

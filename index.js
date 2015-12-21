@@ -1,10 +1,16 @@
 'use strict';
 
-var EventEmitter = require('events').EventEmitter;
-var SQS = require('aws-sdk').SQS;
-var validator = require('@springworks/input-validator');
-var config_schema = require('./lib/config-schema.js');
-var internals = {};
+const EventEmitter = require('events').EventEmitter;
+const SQS = require('aws-sdk').SQS;
+const validator = require('@springworks/input-validator');
+const config_schema = require('./lib/config-schema');
+const SqsHandler = require('./lib/queue/sqs-handler');
+const MessageQueue = require('./lib/queue/message-queue');
+const MessageProcessing = require('./lib/processing/message-processing');
+const MessageCapture = require('./lib/message-capture');
+const SqsTimeoutHandler = require('./lib/sqs-timeout-handler');
+const SqsProcessor = require('./lib/sqs-processor');
+const internals = {};
 
 
 /**
@@ -21,10 +27,10 @@ var internals = {};
  * @throws {Error} If config object is invalid.
  */
 exports.create = function(iterator, config, logger) {
-  var validated_config = validator.validateSchema(config, config_schema);
-  var sqs = new SQS({
+  const validated_config = validator.validateSchema(config, config_schema);
+  const sqs = new SQS({
     region: validated_config.region,
-    apiVersion: validated_config.api_version
+    apiVersion: validated_config.api_version,
   });
 
   return internals.create(sqs, iterator, validated_config, logger);
@@ -40,37 +46,13 @@ exports.create = function(iterator, config, logger) {
  * @return {Object}              See above.
  */
 internals.create = function(sqs, iterator, config, logger) {
-  var emitter = new EventEmitter();
-
-  var sqs_handler = require('./lib/queue/sqs-handler.js').create(
-      sqs,
-      config,
-      logger);
-
-  var message_queue = require('./lib/queue/message-queue.js').create(
-      sqs_handler,
-      logger);
-
-  var message_processing = require('./lib/processing/message-processing.js').create(
-      iterator,
-      message_queue,
-      logger);
-
-  var message_capture = require('./lib/message-capture.js').create(
-      message_queue,
-      message_processing,
-      logger);
-
-  var sqs_timeout_handler = require('./lib/sqs-timeout-handler.js').create(
-      config,
-      logger);
-
-  var sqs_processor = require('./lib/sqs-processor.js').create(
-      message_capture,
-      sqs_timeout_handler,
-      emitter,
-      config,
-      logger);
+  const emitter = new EventEmitter();
+  const sqs_handler = SqsHandler.create(sqs, config, logger);
+  const message_queue = MessageQueue.create(sqs_handler, logger);
+  const message_processing = MessageProcessing.create(iterator, message_queue, logger);
+  const message_capture = MessageCapture.create(message_queue, message_processing, logger);
+  const sqs_timeout_handler = SqsTimeoutHandler.create(config, logger);
+  const sqs_processor = SqsProcessor.create(message_capture, sqs_timeout_handler, emitter, config, logger);
 
   emitter.startProcessingQueue = sqs_processor.startProcessingQueue;
   emitter.stopAfterCurrentBatch = sqs_processor.stopAfterCurrentBatch;
@@ -81,6 +63,5 @@ internals.create = function(sqs, iterator, config, logger) {
 
 /* istanbul ignore else */
 if (process.env.NODE_ENV === 'test') {
-  /** @protected */
   exports.internals = internals;
 }

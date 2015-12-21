@@ -1,14 +1,14 @@
 'use strict';
 
-var sqs_processor_module = require('../../lib/sqs-processor.js');
-var test_util = require('../../test-util/test-util.js');
+const sqs_processor_module = require('../../lib/sqs-processor');
+const test_util = require('../../test-util/test-util');
 
-describe(__filename, function() {
-  var sqs_processor,
-      message_capture_mock,
-      logger_mock,
-      sqs_timeout_handler_mock,
-      emitter_mock;
+describe('test/unit/sqs-processor-test.js', function() {
+  let sqs_processor;
+  let message_capture_mock;
+  let logger_mock;
+  let sqs_timeout_handler_mock;
+  let emitter_mock;
 
   beforeEach(function() {
     logger_mock = {};
@@ -24,7 +24,7 @@ describe(__filename, function() {
     sqs_timeout_handler_mock.start = null;
 
     emitter_mock = {
-      emit: sinon.stub()
+      emit: sinon.stub(),
     };
 
     sqs_processor = sqs_processor_module.create(message_capture_mock,
@@ -37,7 +37,7 @@ describe(__filename, function() {
   describe('starting', function() {
 
     it('should receive the next message batch directly when it is started', function(done) {
-      var stopper_func = sinon.stub();
+      const stopper_func = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
       sqs_timeout_handler_mock.start = sinon.stub();
       sqs_timeout_handler_mock.start.withArgs(sinon.match.func).returns(stopper_func);
@@ -59,7 +59,7 @@ describe(__filename, function() {
 
 
     it('should warn if no messages can be fetched', function(done) {
-      var stopper_func = sinon.stub();
+      const stopper_func = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
 
       sqs_timeout_handler_mock.start = sinon.stub();
@@ -81,8 +81,8 @@ describe(__filename, function() {
     });
 
     it('should fetch a new message batch when done with current batch', function(done) {
-      var stopper_func0 = sinon.stub(),
-          stopper_func1 = sinon.stub();
+      const stopper_func0 = sinon.stub();
+      const stopper_func1 = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
 
       sqs_timeout_handler_mock.start = sinon.stub();
@@ -104,13 +104,12 @@ describe(__filename, function() {
           done();
         });
       });
-
     });
 
     it('should fetch a new message batch when done' +
        'with current batch even if there is an error', function(done) {
-      var stopper_func0 = sinon.stub();
-      var stopper_func1 = sinon.stub();
+      const stopper_func0 = sinon.stub();
+      const stopper_func1 = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
 
       sqs_timeout_handler_mock.start = sinon.stub();
@@ -137,7 +136,7 @@ describe(__filename, function() {
     });
 
     it('should ignore a second call to startProcessingQueue', function() {
-      var stopper_func = sinon.stub();
+      const stopper_func = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
       sqs_timeout_handler_mock.start = sinon.stub();
       sqs_timeout_handler_mock.start.withArgs(sinon.match.func).onFirstCall().returns(stopper_func);
@@ -150,9 +149,8 @@ describe(__filename, function() {
     });
 
     it('should force a new batch if the current batch timesout', function(done) {
-
-      var stopper_func0 = sinon.stub(),
-          stopper_func1 = sinon.stub();
+      const stopper_func0 = sinon.stub();
+      const stopper_func1 = sinon.stub();
 
       sqs_timeout_handler_mock.start = sinon.stub();
       sqs_timeout_handler_mock.start.withArgs(sinon.match.func)
@@ -186,9 +184,8 @@ describe(__filename, function() {
     });
 
     it('should NOT force a new batch if timeout handler throws exception', function(done) {
-
-      var stopper_func0 = sinon.stub(),
-          stopper_func1 = sinon.stub();
+      const stopper_func0 = sinon.stub();
+      const stopper_func1 = sinon.stub();
 
       sqs_timeout_handler_mock.start = sinon.stub();
       sqs_timeout_handler_mock.start.withArgs(sinon.match.func)
@@ -226,8 +223,8 @@ describe(__filename, function() {
     });
 
     it('should not start a new batch if done case already started one when timing out', function(done) {
-      var stopper_func0 = sinon.stub();
-      var stopper_func1 = sinon.stub();
+      const stopper_func0 = sinon.stub();
+      const stopper_func1 = sinon.stub();
 
       sqs_timeout_handler_mock.start = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
@@ -261,5 +258,4 @@ describe(__filename, function() {
     it('should inform the owning instance that there has been a fatal error');
 
   });
-
 });

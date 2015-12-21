@@ -1,19 +1,19 @@
 'use strict';
 
-var message_queue_module = require('../../../lib/queue/message-queue.js');
+const message_queue_module = require('../../../lib/queue/message-queue');
 
-describe(__filename, function() {
-  var sqs_handler_mock;
-  var logger_mock;
-  var message_queue;
+describe('test/unit/queue/message-queue-test.js', function() {
+  let sqs_handler_mock;
+  let logger_mock;
+  let message_queue;
 
   beforeEach(function() {
     sqs_handler_mock = {
       getQueueUrlParams: sinon.stub(),
-      getQueueUrl: sinon.stub()
+      getQueueUrl: sinon.stub(),
     };
     logger_mock = {
-      warn: sinon.stub()
+      warn: sinon.stub(),
     };
     message_queue = message_queue_module.create(sqs_handler_mock, logger_mock);
   });
@@ -26,11 +26,11 @@ describe(__filename, function() {
     });
 
     it('should receive queue messages', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var queue_url_params = { QueueName: queue_name };
-      var queue_url = 'mocked-queue-url-for-' + queue_name;
-      var mocked_messages = ['mocked message'];
-      var sqs_data = { Messages: mocked_messages };
+      const queue_name = 'test_queue_name_' + Date.now();
+      const queue_url_params = { QueueName: queue_name };
+      const queue_url = 'mocked-queue-url-for-' + queue_name;
+      const mocked_messages = ['mocked message'];
+      const sqs_data = { Messages: mocked_messages };
 
       sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
           .withArgs(queue_name).returns(queue_url_params);
@@ -58,8 +58,8 @@ describe(__filename, function() {
     });
 
     it('should callback with err if unable to get queue url', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var queue_url_params = { QueueName: queue_name };
+      const queue_name = 'test_queue_name_' + Date.now();
+      const queue_url_params = { QueueName: queue_name };
 
       sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
           .withArgs(queue_name).returns(queue_url_params);
@@ -83,9 +83,9 @@ describe(__filename, function() {
     });
 
     it('should callback with err if unable receive message batch', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var queue_url_params = { QueueName: queue_name };
-      var queue_url = 'mocked-queue-url-for-' + queue_name;
+      const queue_name = 'test_queue_name_' + Date.now();
+      const queue_url_params = { QueueName: queue_name };
+      const queue_url = 'mocked-queue-url-for-' + queue_name;
 
       sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
           .withArgs(queue_name).returns(queue_url_params);
@@ -112,10 +112,10 @@ describe(__filename, function() {
     });
 
     it('should callback with err if response object is undefined', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var queue_url_params = { QueueName: queue_name };
-      var queue_url = 'mocked-queue-url-for-' + queue_name;
-      var sqs_data = null;
+      const queue_name = 'test_queue_name_' + Date.now();
+      const queue_url_params = { QueueName: queue_name };
+      const queue_url = 'mocked-queue-url-for-' + queue_name;
+      const sqs_data = null;
 
       sqs_handler_mock.getQueueUrlParams.returns(queue_url_params);
       sqs_handler_mock.getQueueUrl.callsArgWithAsync(1, null, queue_url);
@@ -130,10 +130,10 @@ describe(__filename, function() {
     });
 
     it('should callback with an empty array if response does not contain messages', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var queue_url_params = { QueueName: queue_name };
-      var queue_url = 'mocked-queue-url-for-' + queue_name;
-      var sqs_data = { Messages: null };
+      const queue_name = 'test_queue_name_' + Date.now();
+      const queue_url_params = { QueueName: queue_name };
+      const queue_url = 'mocked-queue-url-for-' + queue_name;
+      const sqs_data = { Messages: null };
 
       sqs_handler_mock.getQueueUrlParams.returns(queue_url_params);
       sqs_handler_mock.getQueueUrl.callsArgWithAsync(1, null, queue_url);
@@ -157,10 +157,10 @@ describe(__filename, function() {
     });
 
     it('should delete a message', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var receipt_handle = 'test_receipt_handle_' + Date.now();
-      var queue_url_params = { QueueName: queue_name };
-      var queue_url = 'mocked-queue-url-for-' + queue_name;
+      const queue_name = 'test_queue_name_' + Date.now();
+      const receipt_handle = 'test_receipt_handle_' + Date.now();
+      const queue_url_params = { QueueName: queue_name };
+      const queue_url = 'mocked-queue-url-for-' + queue_name;
 
       sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
           .withArgs(queue_name).returns(queue_url_params);
@@ -186,8 +186,8 @@ describe(__filename, function() {
     });
 
     it('should callback with err if unable to get queue url', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var receipt_handle = 'test_receipt_handle_' + Date.now();
+      const queue_name = 'test_queue_name_' + Date.now();
+      const receipt_handle = 'test_receipt_handle_' + Date.now();
 
       sqs_handler_mock.getQueueUrlParams.returns({ QueueName: queue_name });
 
@@ -206,10 +206,10 @@ describe(__filename, function() {
     });
 
     it('should callback with err if delete fails', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var receipt_handle = 'test_receipt_handle_' + Date.now();
-      var queue_url_params = { QueueName: queue_name };
-      var queue_url = 'mocked-queue-url-for-' + queue_name;
+      const queue_name = 'test_queue_name_' + Date.now();
+      const receipt_handle = 'test_receipt_handle_' + Date.now();
+      const queue_url_params = { QueueName: queue_name };
+      const queue_url = 'mocked-queue-url-for-' + queue_name;
 
       sqs_handler_mock.getQueueUrlParams.throws('getQueueUrlParams not mocked for specified args')
           .withArgs(queue_name).returns(queue_url_params);

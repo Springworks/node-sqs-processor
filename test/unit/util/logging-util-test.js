@@ -1,28 +1,28 @@
 'use strict';
 
-var logging_util = require('../../../lib/util/logging-util.js');
+const logging_util = require('../../../lib/util/logging-util');
 
-var formattedPayload = logging_util.formattedPayload;
-var payloadForSQSMessage = logging_util.payloadForSQSMessage;
-var payloadDate = logging_util.payloadDate;
+const formattedPayload = logging_util.formattedPayload;
+const payloadForSQSMessage = logging_util.payloadForSQSMessage;
+const payloadDate = logging_util.payloadDate;
 
-describe(__filename, function() {
+describe('test/unit/util/logging-util-test.js', function() {
 
   describe('formattedPayload', function() {
 
     it('should format the provided data on a format that is analytics-friendly', function() {
       formattedPayload({ a: 1 }).should.eql({
         payload: {
-          a: 1
-        }
+          a: 1,
+        },
       });
       formattedPayload([1, 2, 3]).should.eql({
-        payload: [1, 2, 3]
+        payload: [1, 2, 3],
       });
     });
 
     it('should return null if data is falsy', function() {
-      var val = formattedPayload();
+      const val = formattedPayload();
       (val === null).should.eql(true);
     });
 
@@ -31,25 +31,26 @@ describe(__filename, function() {
   describe('payloadForSQSMessage', function() {
 
     it('should return a formatted payload for an SQS message', function() {
-      var date = new Date(),
-          payload = payloadForSQSMessage({
-            MessageId: '123',
-            Attributes: {
-              ApproximateReceiveCount: 1,
-              SentTimestamp: date.getTime(),
-              ApproximateFirstReceiveTimestamp: date.getTime()
-            }
-          });
+      const date = new Date();
+
+      const payload = payloadForSQSMessage({
+        MessageId: '123',
+        Attributes: {
+          ApproximateReceiveCount: 1,
+          SentTimestamp: date.getTime(),
+          ApproximateFirstReceiveTimestamp: date.getTime(),
+        },
+      });
 
       payload.should.have.keys([
-        'payload'
+        'payload',
       ]);
       payload.payload.should.have.keys([
         'err',
         'message_id',
         'approx_receive_count',
         'sent_at',
-        'approx_first_received_at'
+        'approx_first_received_at',
       ]);
       (payload.payload.err === undefined).should.eql(true);
       payload.payload.message_id.should.eql('123');
@@ -61,22 +62,23 @@ describe(__filename, function() {
     });
 
     it('should take an optional error and include in the payload', function() {
-      var date = new Date(),
-          payload = payloadForSQSMessage({
-            MessageId: '123',
-            Attributes: {
-              ApproximateReceiveCount: 1,
-              SentTimestamp: date.getTime(),
-              ApproximateFirstReceiveTimestamp: date.getTime()
-            }
-          }, new Error('test err'));
+      const date = new Date();
+
+      const payload = payloadForSQSMessage({
+        MessageId: '123',
+        Attributes: {
+          ApproximateReceiveCount: 1,
+          SentTimestamp: date.getTime(),
+          ApproximateFirstReceiveTimestamp: date.getTime(),
+        },
+      }, new Error('test err'));
 
       payload.payload.err.should.be.an.instanceof(Error);
       payload.payload.err.message.should.eql('test err');
     });
 
     it('should return null if message is falsy', function() {
-      var val = payloadForSQSMessage();
+      const val = payloadForSQSMessage();
       (val === null).should.eql(true);
     });
 
@@ -85,18 +87,18 @@ describe(__filename, function() {
   describe('payloadDate', function() {
 
     it('should parse a string timestamp', function() {
-      var actual = new Date(),
-          json = actual.toJSON(),
-          date = payloadDate(json);
+      const actual = new Date();
+      const json = actual.toJSON();
+      const date = payloadDate(json);
       date.should.be.an.instanceof(Date);
       date.toJSON().should.eql(json);
     });
 
     it('should parse a epoch timestamp', function() {
-      var actual = new Date(),
-          json = actual.toJSON(),
-          epoch = actual.getTime(),
-          date = payloadDate(epoch);
+      const actual = new Date();
+      const json = actual.toJSON();
+      const epoch = actual.getTime();
+      const date = payloadDate(epoch);
       date.should.be.an.instanceof(Date);
       date.toJSON().should.eql(json);
     });

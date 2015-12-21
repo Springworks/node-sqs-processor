@@ -1,22 +1,22 @@
 'use strict';
 
-var message_processing_module = require('../../../lib/processing/message-processing.js');
+const message_processing_module = require('../../../lib/processing/message-processing');
 
-describe(__filename, function() {
-  var message_queue_mock;
-  var logger_mock;
-  var providedMessageProcessor;
-  var message_processing;
+describe('test/unit/processing/message-processing-test.js', function() {
+  let message_queue_mock;
+  let logger_mock;
+  let providedMessageProcessor;
+  let message_processing;
 
   beforeEach(function() {
     message_queue_mock = {
-      deleteMessage: sinon.stub()
+      deleteMessage: sinon.stub(),
     };
     logger_mock = {
       trace: sinon.stub(),
       info: sinon.stub(),
       warn: sinon.stub(),
-      error: sinon.stub()
+      error: sinon.stub(),
     };
     providedMessageProcessor = sinon.stub();
     message_processing = message_processing_module.create(providedMessageProcessor, message_queue_mock, logger_mock);
@@ -25,8 +25,8 @@ describe(__filename, function() {
   describe('processMessages', function() {
 
     it('should process a batch of messages', function(done) {
-      var sqs_messages = [getMockedMessage(), getMockedMessage()];
-      var queue_name = 'queue_name ' + randomString();
+      const sqs_messages = [getMockedMessage(), getMockedMessage()];
+      const queue_name = 'queue_name ' + randomString();
 
       providedMessageProcessor.callsArgWithAsync(1, null);
       message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
@@ -40,12 +40,12 @@ describe(__filename, function() {
     });
 
     it('should only delete successfully processed messages', function(done) {
-      var queue_name = 'queue_name ' + randomString();
-      var sqs_messages = [
+      const queue_name = 'queue_name ' + randomString();
+      const sqs_messages = [
         getMockedMessage(),
         getMockedMessage(),
         getMockedMessage(),
-        getMockedMessage()
+        getMockedMessage(),
       ];
 
       // Setup message processor to fail on the second message and throw on the third but
@@ -76,8 +76,8 @@ describe(__filename, function() {
   describe('processMessage', function() {
 
     it('should process a single message', function(done) {
-      var queue_name = 'queue_name ' + randomString();
-      var sqs_message = getMockedMessage();
+      const queue_name = 'queue_name ' + randomString();
+      const sqs_message = getMockedMessage();
 
       providedMessageProcessor.callsArgWithAsync(1, null);
       message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
@@ -92,8 +92,8 @@ describe(__filename, function() {
   });
 
   describe('handleProcessedMessage', function() {
-    var queue_name = 'queue_name ' + randomString();
-    var sqs_message = getMockedMessage();
+    const queue_name = 'queue_name ' + randomString();
+    const sqs_message = getMockedMessage();
 
     describe('with valid input and processed message', function() {
 
@@ -142,7 +142,7 @@ describe(__filename, function() {
 
       it('should invoke callback and not delete message', function(done) {
         message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
-        var invalid_sqs_message_param = {};
+        const invalid_sqs_message_param = {};
         message_processing.handleProcessedMessage(null, queue_name, invalid_sqs_message_param, function(err) {
           logger_mock.warn.should.have.callCount(1);
           message_queue_mock.deleteMessage.should.have.callCount(0);
@@ -158,16 +158,16 @@ describe(__filename, function() {
 
 
 function getMockedMessage() {
-  var r = randomString();
+  const r = randomString();
   return {
     MessageId: 'MessageId ' + r,
     ReceiptHandle: 'ReceiptHandle ' + r,
     Attributes: {
       ApproximateReceiveCount: 0,
       SentTimestamp: Date.now(),
-      ApproximateFirstReceiveTimestamp: undefined
+      ApproximateFirstReceiveTimestamp: undefined,
     },
-    Body: '{}'
+    Body: '{}',
   };
 }
 

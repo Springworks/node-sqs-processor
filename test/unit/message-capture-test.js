@@ -1,12 +1,12 @@
 'use strict';
 
-var message_capture_module = require('../../lib/message-capture.js');
+const message_capture_module = require('../../lib/message-capture');
 
-describe(__filename, function() {
-  var message_queue_mock;
-  var message_processing_mock;
-  var logger_mock;
-  var message_capture;
+describe('test/unit/message-capture-test.js', function() {
+  let message_queue_mock;
+  let message_processing_mock;
+  let logger_mock;
+  let message_capture;
 
   beforeEach(function() {
     message_queue_mock = { receiveQueueMessages: sinon.stub() };
@@ -21,8 +21,8 @@ describe(__filename, function() {
   describe('receiveMessageBatch', function() {
 
     it('should receive a message batch from specified queue', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now();
-      var sqs_messages = ['test message'];
+      const queue_name = 'test_queue_name_' + Date.now();
+      const sqs_messages = ['test message'];
 
       message_queue_mock.receiveQueueMessages.callsArgWithAsync(1, null, sqs_messages);
       message_processing_mock.processMessages.callsArgWithAsync(2, null);
@@ -47,8 +47,9 @@ describe(__filename, function() {
     });
 
     it('should not process an empty message batch', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          sqs_messages = []; // empty batch
+      const queue_name = 'test_queue_name_' + Date.now();
+      const sqs_messages = [];
+      // empty batch
 
       message_queue_mock.receiveQueueMessages.callsArgWithAsync(1, null, sqs_messages);
       message_processing_mock.processMessages.callsArgWithAsync(2, null);
@@ -69,8 +70,8 @@ describe(__filename, function() {
     });
 
     it('should callback with err if unable to fetch messages', function(done) {
-      var queue_name = 'test_queue_name_' + Date.now(),
-          sqs_err = new Error('Mocked SQS err');
+      const queue_name = 'test_queue_name_' + Date.now();
+      const sqs_err = new Error('Mocked SQS err');
 
       message_queue_mock.receiveQueueMessages.callsArgWithAsync(1, sqs_err, null);
       message_processing_mock.processMessages.callsArgWithAsync(2, null);
