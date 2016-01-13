@@ -8,24 +8,33 @@ describe('test/acceptance/sqs-processor-test.js', () => {
   let iterator;
   let logger_mock;
   let sqs_processor;
+  let sinon_sandbox;
+
+  beforeEach(() => {
+    sinon_sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(() => {
+    sinon_sandbox.restore();
+  });
 
   beforeEach(() => {
     aws_sqs_mock = {
-      receiveMessage: sinon.stub(),
-      getQueueUrl: sinon.stub(),
-      deleteMessage: sinon.stub(),
+      receiveMessage: sinon_sandbox.stub(),
+      getQueueUrl: sinon_sandbox.stub(),
+      deleteMessage: sinon_sandbox.stub(),
     };
 
     logger_mock = {
-      info: sinon.stub(),
-      warn: sinon.stub(),
-      error: sinon.stub(),
-      trace: sinon.stub(),
-      fatal: sinon.stub(),
-      debug: sinon.stub(),
+      info: sinon_sandbox.stub(),
+      warn: sinon_sandbox.stub(),
+      error: sinon_sandbox.stub(),
+      trace: sinon_sandbox.stub(),
+      fatal: sinon_sandbox.stub(),
+      debug: sinon_sandbox.stub(),
     };
 
-    iterator = sinon.stub();
+    iterator = sinon_sandbox.stub();
 
     sqs_processor = sqs_processor_module.internals.create(
         aws_sqs_mock,
@@ -39,7 +48,7 @@ describe('test/acceptance/sqs-processor-test.js', () => {
     it('should be happy', done => {
       let counter = 0;
 
-      iterator.withArgs(sinon.match(value => {
+      iterator.withArgs(sinon_sandbox.match(value => {
         counter += 1;
         // Count number of messages and stop the recursive loop after 4
         if (counter === 4) {
@@ -79,9 +88,36 @@ describe('test/acceptance/sqs-processor-test.js', () => {
     });
 
     it('should create the module with an AWS instance', () => {
-      const fn = sinon.stub();
+      const fn = sinon_sandbox.stub();
       fn.throws(new Error('should not call'));
       sqs_processor_module.create(fn, test_util.getTestConfig(), logger_mock);
+    });
+
+    describe('omitting visibility_timeout', () => {
+      let mock_iterator;
+      let test_config;
+      let internal_create_spy;
+
+      beforeEach(() => {
+        mock_iterator = sinon_sandbox.stub();
+      });
+
+      beforeEach(() => {
+        test_config = test_util.getTestConfig();
+        delete test_config.visibility_timeout;
+      });
+
+      beforeEach('spyOnInternalFunction', () => {
+        internal_create_spy = sinon_sandbox.spy(sqs_processor_module.internals, 'create');
+      });
+
+      it('should not set any default value for visibility_timeout', () => {
+        sqs_processor_module.create(mock_iterator, test_config, logger_mock);
+        const call_args = internal_create_spy.getCall(0).args;
+        const config_arg = call_args[2];
+        config_arg.should.not.have.property('visibility_timeout');
+      });
+
     });
 
   });
