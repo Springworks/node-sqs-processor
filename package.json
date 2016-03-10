@@ -1,6 +1,6 @@
 {
   "name": "@springworks/sqs-processor",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Module for SQS queue processing",
   "main": "index.js",
   "scripts": {
