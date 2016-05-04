@@ -10,7 +10,7 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "@springworks/error-factory": "2.0.5",
+    "@springworks/error-factory": "2.0.6",
     "@springworks/input-validator": "4.0.8",
     "async": "1.5.2",
     "aws-sdk": "2.3.8"
