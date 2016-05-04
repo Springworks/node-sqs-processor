@@ -1,13 +1,13 @@
 {
   "name": "@springworks/sqs-processor",
-  "version": "1.0.23",
   "description": "Module for SQS queue processing",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test istanbul cover _mocha -- test",
-    "test-no-cov": "NODE_ENV=test mocha test",
+    "test": "NODE_ENV=test istanbul cover _mocha",
+    "test-no-cov": "NODE_ENV=test mocha",
     "lint": "eslint --cache .",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
     "@springworks/error-factory": "2.0.6",
@@ -24,11 +24,12 @@
     "eslint-plugin-mocha": "^2.2.0",
     "eslint-plugin-springworks": "^1.1.3",
     "istanbul": "^1.0.0-alpha.2",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "semantic-release": "^4.3.5"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Springworks/node-sqs-processor.git"
+    "url": "https://github.com/Springworks/node-sqs-processor.git"
   },
   "engines": {
     "node": ">=4",
