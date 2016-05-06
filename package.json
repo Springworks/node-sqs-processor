@@ -6,6 +6,7 @@
     "test": "NODE_ENV=test istanbul cover _mocha",
     "test-no-cov": "NODE_ENV=test mocha",
     "lint": "eslint --cache .",
+    "postpublish": "greenkeeper-postpublish",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "commit": "commit-wizard"
@@ -24,6 +25,7 @@
     "eslint-plugin-import": "^1.6.1",
     "eslint-plugin-mocha": "^2.2.0",
     "eslint-plugin-springworks": "^2.0.1",
+    "greenkeeper-postpublish": "1.0.0",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "^2.4.5",
     "pre-git": "^3.8.3",
