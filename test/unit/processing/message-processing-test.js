@@ -59,9 +59,6 @@ describe('test/unit/processing/message-processing-test.js', () => {
       message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
 
       message_processing.processMessages(sqs_messages, queue_name, () => {
-        // Two warnings was logged for the two failed messages
-        logger_mock.warn.should.have.callCount(2);
-
         providedMessageProcessor.should.have.callCount(sqs_messages.length);
 
         // Check that only 2 messeges was deleted
@@ -113,8 +110,8 @@ describe('test/unit/processing/message-processing-test.js', () => {
 
       it('should callback immediately without passing err', done => {
         message_processing.handleProcessedMessage(new Error('Error from processMessage'), queue_name, sqs_message, err => {
-          logger_mock.trace.should.have.callCount(0);
-          logger_mock.warn.should.have.callCount(1);
+          logger_mock.trace.should.have.callCount(1);
+          logger_mock.warn.should.have.callCount(0);
           message_queue_mock.deleteMessage.should.have.callCount(0);
           done(err);
         });

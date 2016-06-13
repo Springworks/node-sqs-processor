@@ -74,7 +74,7 @@ describe('test/unit/sqs-processor-test.js', () => {
 
       process.nextTick(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, new Error('smackzors'));
-        logger_mock.warn.should.be.calledWith(new Error('smackzors'), 'An error occurred during message capturing');
+        logger_mock.trace.should.be.calledWith(new Error('smackzors'), 'receiveNextBatch failed');
         done();
       });
 
@@ -206,7 +206,6 @@ describe('test/unit/sqs-processor-test.js', () => {
         sqs_timeout_handler_mock.start.callArgWith(0, new Error('stop'));
 
         logger_mock.error.should.have.callCount(1);
-        logger_mock.error.should.be.calledWithExactly(sinon.match.instanceOf(Error).and(sinon.match.has('message', 'stop')));
 
         emitter_mock.emit.should.have.callCount(1);
         emitter_mock.emit.should.be.calledWithExactly('error', sinon.match.instanceOf(Error).and(sinon.match.has('message', 'stop')));
