@@ -11,7 +11,7 @@ describe('test/unit/message-capture-test.js', () => {
   beforeEach(() => {
     message_queue_mock = { receiveQueueMessages: sinon.stub() };
     message_processing_mock = { processMessages: sinon.stub() };
-    logger_mock = { debug: sinon.stub(), info: sinon.stub(), warn: sinon.stub() };
+    logger_mock = { trace: sinon.stub(), debug: sinon.stub(), info: sinon.stub(), warn: sinon.stub() };
     message_capture = message_capture_module.create(
         message_queue_mock,
         message_processing_mock,
@@ -58,7 +58,7 @@ describe('test/unit/message-capture-test.js', () => {
         should.not.exist(err);
 
         logger_mock.debug.should.have.callCount(0);
-        logger_mock.info.should.have.callCount(1);
+        logger_mock.info.should.have.callCount(0);
         logger_mock.warn.should.have.callCount(0);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
         message_queue_mock.receiveQueueMessages.should.be.calledWith(
@@ -82,11 +82,8 @@ describe('test/unit/message-capture-test.js', () => {
 
         logger_mock.debug.should.have.callCount(0);
         logger_mock.info.should.have.callCount(0);
-        logger_mock.warn.should.have.callCount(1);
-        logger_mock.warn.should.be.calledWithExactly(
-            sqs_err,
-            'Error receiving messages for queue %s',
-            queue_name);
+        logger_mock.warn.should.have.callCount(0);
+        logger_mock.trace.should.have.callCount(1);
         message_queue_mock.receiveQueueMessages.should.have.callCount(1);
         message_queue_mock.receiveQueueMessages.should.be.calledWith(
             queue_name,
