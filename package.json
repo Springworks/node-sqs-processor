@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@springworks/error-factory": "2.0.9",
-    "@springworks/input-validator": "4.0.19",
+    "@springworks/input-validator": "4.0.20",
     "async": "1.5.2",
     "aws-sdk": "2.4.6"
   },
