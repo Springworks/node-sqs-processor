@@ -42,16 +42,8 @@ describe('test/unit/util/logging-util-test.js', () => {
         },
       });
 
-      payload.should.have.keys([
-        'payload',
-      ]);
-      payload.payload.should.have.keys([
-        'err',
-        'message_id',
-        'approx_receive_count',
-        'sent_at',
-        'approx_first_received_at',
-      ]);
+      payload.should.have.keys('payload');
+      payload.payload.should.have.keys('err', 'message_id', 'approx_receive_count', 'sent_at', 'approx_first_received_at');
       (payload.payload.err === undefined).should.eql(true);
       payload.payload.message_id.should.eql('123');
       payload.payload.approx_receive_count.should.eql(1);
