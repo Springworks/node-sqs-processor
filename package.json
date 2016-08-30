@@ -23,7 +23,7 @@
     "eslint": "3.4.0",
     "eslint-config-springworks": "7.0.6",
     "eslint-plugin-import": "1.14.0",
-    "eslint-plugin-mocha": "4.5.0",
+    "eslint-plugin-mocha": "4.5.1",
     "eslint-plugin-springworks": "2.0.1",
     "greenkeeper-postpublish": "1.0.1",
     "istanbul": "1.1.0-alpha.1",
