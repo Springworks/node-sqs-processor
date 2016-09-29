@@ -22,7 +22,7 @@
     "coveralls": "2.11.14",
     "eslint": "3.6.1",
     "eslint-config-springworks": "7.0.6",
-    "eslint-plugin-import": "1.16.0",
+    "eslint-plugin-import": "2.0.0",
     "eslint-plugin-mocha": "4.5.1",
     "eslint-plugin-springworks": "2.0.1",
     "greenkeeper-postpublish": "1.0.1",
