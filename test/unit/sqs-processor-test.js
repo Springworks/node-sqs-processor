@@ -74,7 +74,7 @@ describe('test/unit/sqs-processor-test.js', () => {
 
       process.nextTick(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, new Error('smackzors'));
-        logger_mock.trace.should.be.calledWith(new Error('smackzors'), 'receiveNextBatch failed');
+        logger_mock.trace.should.be.calledWith(new Error('smackzors'), sinon.match('receiveNextBatch failed'));
         done();
       });
 
@@ -95,19 +95,18 @@ describe('test/unit/sqs-processor-test.js', () => {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(() => {
+      setImmediate(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, null);
         stopper_func0.should.be.calledWith();
-        process.nextTick(() => {
+        setTimeout(() => {
           message_capture_mock.receiveMessageBatch.should.have.callCount(2);
           sqs_processor.stopAfterCurrentBatch();
           done();
-        });
+        }, 1010);
       });
     });
 
-    it('should fetch a new message batch when done' +
-       'with current batch even if there is an error', done => {
+    it('should fetch a new message batch when done with current batch even if there is an error but delayed', done => {
       const stopper_func0 = sinon.stub();
       const stopper_func1 = sinon.stub();
       message_capture_mock.receiveMessageBatch = sinon.stub();
@@ -122,16 +121,19 @@ describe('test/unit/sqs-processor-test.js', () => {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(() => {
+      setImmediate(() => {
         message_capture_mock.receiveMessageBatch.callArgWith(1, new Error('message'));
-        stopper_func0.should.be.calledWith();
-
-        process.nextTick(() => {
-          message_capture_mock.receiveMessageBatch.should.have.callCount(2);
-          done();
-        });
-
+        stopper_func0.should.be.calledOnce();
       });
+
+      setTimeout(() => {
+        message_capture_mock.receiveMessageBatch.should.have.callCount(1);
+      }, 2);
+
+      setTimeout(() => {
+        message_capture_mock.receiveMessageBatch.should.have.callCount(2);
+        done();
+      }, 1010);
 
     });
 
@@ -148,7 +150,7 @@ describe('test/unit/sqs-processor-test.js', () => {
       sqs_timeout_handler_mock.start.should.have.callCount(1);
     });
 
-    it('should force a new batch if the current batch timesout', done => {
+    it('should force a new batch if the current batch timeout', done => {
       const stopper_func0 = sinon.stub();
       const stopper_func1 = sinon.stub();
 
@@ -165,12 +167,12 @@ describe('test/unit/sqs-processor-test.js', () => {
       // make sure message capture was called
       message_capture_mock.receiveMessageBatch.should.be.calledWith('test_queue_name', sinon.match.func);
 
-      process.nextTick(() => {
+      setImmediate(() => {
         // call the timeout callback instead of the message_capture timeout
         sqs_timeout_handler_mock.start.callArgWith(0, null);
         stopper_func0.should.have.callCount(0);
 
-        process.nextTick(() => {
+        setTimeout(() => {
           // stop should not have been called sine the timeout have cleared it
           stopper_func1.should.have.callCount(0);
 
@@ -179,7 +181,7 @@ describe('test/unit/sqs-processor-test.js', () => {
           sqs_timeout_handler_mock.start.should.have.callCount(2);
 
           done();
-        });
+        }, 1010);
       });
     });
 
@@ -242,16 +244,14 @@ describe('test/unit/sqs-processor-test.js', () => {
       // start. This will call receiveMessageBatch once
       sqs_processor.startProcessingQueue();
 
-      //wait two ticks
-      process.nextTick(() => {
-        process.nextTick(() => {
-          message_capture_mock.receiveMessageBatch.should.have.callCount(2);
-          sqs_timeout_handler_mock.start.should.have.callCount(2);
-          done();
-        });
-      });
-    });
+      // wait more than backoff time
+      setTimeout(() => {
+        message_capture_mock.receiveMessageBatch.should.have.callCount(2);
+        sqs_timeout_handler_mock.start.should.have.callCount(2);
+        done();
+      }, 1010);
 
+    });
 
 
     it('should inform the owning instance that there has been a fatal error');
