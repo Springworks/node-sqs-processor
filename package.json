@@ -18,7 +18,7 @@
     "aws-sdk": "2.7.10"
   },
   "devDependencies": {
-    "@springworks/test-harness": "1.5.1",
+    "@springworks/test-harness": "1.5.2",
     "coveralls": "2.11.14",
     "eslint": "3.12.0",
     "eslint-config-springworks": "7.0.7",
