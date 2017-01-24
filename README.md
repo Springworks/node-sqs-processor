@@ -2,6 +2,8 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/Springworks/node-sqs-processor.svg)](https://greenkeeper.io/)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Springworks/node-sqs-processor.svg)](https://greenkeeper.io/)
+
 Module for SQS queue processing
 
 
