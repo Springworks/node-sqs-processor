@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@springworks/test-harness": "1.5.4",
-    "coveralls": "2.11.15",
+    "coveralls": "2.11.16",
     "eslint": "3.14.1",
     "eslint-config-springworks": "7.0.7",
     "eslint-plugin-import": "2.2.0",
