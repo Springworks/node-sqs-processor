@@ -28,7 +28,7 @@
     "greenkeeper-postpublish": "1.0.1",
     "istanbul": "1.1.0-alpha.1",
     "mocha": "3.2.0",
-    "pre-git": "3.12.1",
+    "pre-git": "3.13.0",
     "semantic-release": "6.3.2"
   },
   "config": {
