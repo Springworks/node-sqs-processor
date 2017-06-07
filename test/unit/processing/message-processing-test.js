@@ -32,7 +32,6 @@ describe('test/unit/processing/message-processing-test.js', () => {
       message_queue_mock.deleteMessage.callsArgWithAsync(2, null);
 
       message_processing.processMessages(sqs_messages, queue_name, () => {
-        logger_mock.info.should.have.callCount(2);
         providedMessageProcessor.should.have.callCount(sqs_messages.length);
         message_queue_mock.deleteMessage.should.have.callCount(sqs_messages.length);
         done();
