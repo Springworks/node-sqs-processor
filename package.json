@@ -11,7 +11,7 @@
     "commit": "commit-wizard"
   },
   "dependencies": {
-    "@springworks/error-factory": "^2.0.9",
+    "@springworks/error-factory": "^3.0.0",
     "@springworks/input-validator": "^5.0.3",
     "async": "^2.1.5",
     "aws-sdk": "^2.7.19"
